@@ -21,7 +21,7 @@ export function OwnDataSection() {
 
         {/* Header */}
         <div className="text-center mb-16">
-          <p className="mb-3 font-script text-3xl text-primary">Why MBPP?</p>
+          <p className="mb-3 font-script text-3xl text-primary">Why This Research Matters?</p>
           <h2 className="mb-6 font-serif text-3xl font-bold leading-tight text-[#2a1845] md:text-4xl lg:text-5xl">
             Menghadapi Era AI dengan Kesadaran Penuh
           </h2>

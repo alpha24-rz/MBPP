@@ -1,75 +1,119 @@
-import Image from "next/image"
-import {
-  MessageSquare,
-  FolderOpen,
-  StickyNote,
-  Music,
-  Figma,
-  Languages,
-  Code,
-  Globe,
-  Terminal,
-  Palette,
-} from "lucide-react"
+import { ClipboardList, FlaskConical, BookOpen, BarChart3, Users, ArrowRight } from "lucide-react"
 
-const apps = [
-  { name: "Messages", desc: "Real-time chat", icon: MessageSquare, color: "from-[#f59e0b] to-[#fbbf24]" },
-  { name: "Files", desc: "Cloud storage", icon: FolderOpen, color: "from-[#6366f1] to-[#818cf8]" },
-  { name: "Notes", desc: "Rich documents", icon: StickyNote, color: "from-[#1e1e2e] to-[#3a3a5c]" },
-  { name: "Music", desc: "Audio player", icon: Music, color: "from-[#ec4899] to-[#f472b6]" },
-  { name: "Design", desc: "Visual editor", icon: Figma, color: "from-[#a78bfa] to-[#c4b5fd]" },
-  { name: "Translate", desc: "Language tools", icon: Languages, color: "from-[#f87171] to-[#fca5a5]" },
-  { name: "Code", desc: "Code editor", icon: Code, color: "from-[#fb923c] to-[#fdba74]" },
-  { name: "Publish", desc: "Web publishing", icon: Globe, color: "from-[#3b82f6] to-[#60a5fa]" },
-  { name: "Terminal", desc: "Command line", icon: Terminal, color: "from-[#1e1e2e] to-[#374151]" },
-  { name: "Canvas", desc: "Design tool", icon: Palette, color: "from-[#8b5cf6] to-[#a78bfa]" },
+const steps = [
+  {
+    number: "01",
+    icon: ClipboardList,
+    title: "Asesmen Awal",
+    subtitle: "Baseline Assessment",
+    desc: "Peserta mengisi instrumen penilaian awal yang mengukur profil kepribadian Big Five, tingkat kesadaran diri (mindfulness trait), serta pola interaksi mereka dengan teknologi AI saat ini.",
+    tag: "Pre-Programme",
+    tagColor: "bg-amber-100 text-amber-700",
+  },
+  {
+    number: "02",
+    icon: BookOpen,
+    title: "Sesi Psikoedukasi",
+    subtitle: "Psychoeducation Sessions",
+    desc: "Serangkaian 6 sesi terstruktur yang memadukan konten berbasis riset dengan latihan mindfulness praktis. Setiap sesi dirancang untuk membangun pemahaman secara bertahap — dari kesadaran diri, regulasi emosi, hingga literasi AI yang bertanggung jawab.",
+    tag: "Core Programme",
+    tagColor: "bg-[#ede9fb] text-[#6d3fc9]",
+  },
+  {
+    number: "03",
+    icon: FlaskConical,
+    title: "Latihan & Refleksi",
+    subtitle: "Practice & Journaling",
+    desc: "Di antara sesi, peserta melakukan latihan mandiri yang dipandu — termasuk journaling terbimbing, latihan jeda sadar (mindful pause), dan analisis interaksi AI mereka sendiri berdasarkan kerangka Big Five.",
+    tag: "Between Sessions",
+    tagColor: "bg-emerald-100 text-emerald-700",
+  },
+  {
+    number: "04",
+    icon: BarChart3,
+    title: "Evaluasi & Pengukuran",
+    subtitle: "Post-Programme Evaluation",
+    desc: "Setelah programme selesai, dilakukan pengukuran ulang menggunakan instrumen yang sama. Data pre- dan post-test dianalisis untuk mengukur perubahan signifikan dalam efikasi diri digital, regulasi emosi, dan pola penggunaan AI.",
+    tag: "Post-Programme",
+    tagColor: "bg-sky-100 text-sky-700",
+  },
 ]
 
 export function CaptainSection() {
   return (
-    <section className="relative">
-      {/* Biplane illustration */}
-      <div className="relative h-[400px] w-full md:h-[500px]">
-        <Image
-          src="/images/biplane.jpg"
-          alt="Red vintage biplane flying through the sky"
-          fill
-          className="object-cover"
-        />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[#FBF6ED] to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#FBF6ED] to-transparent" />
+    <section id="how-it-works" className="relative bg-[#FBF6ED] px-6 py-28 scroll-mt-20">
+
+      {/* Header */}
+      <div className="mx-auto max-w-4xl text-center mb-20">
+        <p className="mb-3 font-script text-3xl text-primary">The Mechanism</p>
+        <h2 className="mb-6 font-serif text-3xl font-bold leading-tight text-[#2a1845] md:text-4xl lg:text-5xl">
+          How the Programme Works?
+        </h2>
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
+          MBPP diterapkan melalui sebuah desain penelitian eksperimental yang terstruktur. Berikut adalah alur bagaimana
+          temuan riset diterjemahkan menjadi sebuah program intervensi yang dapat diikuti oleh peserta.
+        </p>
       </div>
 
-      <div className="flex flex-col items-center bg-[#FBF6ED] px-4 py-20 text-center">
-        <p className="mb-4 font-script text-2xl text-primary md:text-3xl">{"You're in Control"}</p>
-        <h2 className="mb-4 max-w-lg font-serif text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
-          A universe of tools<br />
-          at your fingertips
-        </h2>
-        <p className="mb-12 max-w-md text-sm leading-relaxed text-muted-foreground">
-          Discover a growing library of powerful apps
-          designed to help you work, create, and play.
-        </p>
+      {/* Steps */}
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 relative">
+          {steps.map((step, idx) => {
+            const Icon = step.icon
+            return (
+              <div key={step.number} className="relative flex flex-col group">
+                {/* Card */}
+                <div className="flex flex-col h-full rounded-3xl border border-[#e8e0f7] bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 p-7">
 
-        {/* App grid */}
-        <div className="mx-auto grid w-full max-w-2xl grid-cols-5 gap-6 md:gap-8">
-          {apps.map((app) => (
-            <div key={app.name} className="flex flex-col items-center gap-2">
-              <div
-                className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${app.color} shadow-md transition-transform hover:scale-105 md:h-16 md:w-16`}
-              >
-                <app.icon className="h-6 w-6 text-primary-foreground" />
+                  {/* Number + Icon */}
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7c4fd4] to-[#5e35b8] shadow-md shadow-purple-200">
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+                    <span className="text-4xl font-bold text-[#ede9fb] select-none leading-none">
+                      {step.number}
+                    </span>
+                  </div>
+
+                  {/* Tag */}
+                  <span className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide mb-4 ${step.tagColor}`}>
+                    {step.tag}
+                  </span>
+
+                  {/* Text */}
+                  <h3 className="text-lg font-bold text-[#2a1845] mb-1">{step.title}</h3>
+                  <p className="text-xs font-medium text-[#7c4fd4]/70 mb-3 italic">{step.subtitle}</p>
+                  <p className="text-sm text-foreground/70 leading-relaxed flex-1">{step.desc}</p>
+
+                  {/* Arrow between cards (desktop) */}
+                  {idx < steps.length - 1 && (
+                    <div className="hidden lg:flex absolute -right-4 top-12 z-10 h-8 w-8 items-center justify-center rounded-full bg-white border border-[#e0d6f5] shadow-sm">
+                      <ArrowRight className="h-4 w-4 text-[#7c4fd4]" />
+                    </div>
+                  )}
+                </div>
               </div>
-              <span className="text-[10px] font-medium text-foreground md:text-xs">{app.name}</span>
-              <span className="hidden text-[9px] text-muted-foreground md:block">{app.desc}</span>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
-        <button className="mt-12 rounded-full bg-gradient-to-r from-[#d94f7a] to-[#e8738a] px-8 py-3 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:brightness-110">
-          Explore All Tools
-        </button>
+        {/* Research design note */}
+        <div className="mt-16 mx-auto max-w-3xl rounded-2xl border border-[#e0d6f5] bg-[#f7f3fd] p-6 flex flex-col md:flex-row items-start md:items-center gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ede9fb] text-[#7c4fd4]">
+            <Users className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#2a1845] mb-1">Desain Penelitian</p>
+            <p className="text-xs text-foreground/70 leading-relaxed">
+              Programme ini diuji menggunakan desain{" "}
+              <span className="font-medium text-[#5e35b8]">Randomized Controlled Trial (RCT)</span>{" "}
+              dengan kelompok eksperimen dan kelompok kontrol. Validitas instrumen, reliabilitas inter-rater,
+              dan signifikansi statistik hasil intervensi telah diverifikasi melalui proses peer-review.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   )
 }
+

@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/hero-section"
 import { HomeSection } from "@/components/home-section"
 import { OwnDataSection } from "@/components/own-data-section"
 import { CaptainSection } from "@/components/captain-section"
+import { FeaturedSection } from "@/components/featured-section"
 import { TeamworkSection } from "@/components/teamwork-section"
 import { DeveloperSection } from "@/components/developer-section"
 import { ExploringSection } from "@/components/exploring-section"
@@ -15,8 +16,11 @@ export default function Page() {
       <HeroSection />
       <HomeSection />
       <OwnDataSection />
-      {/* <CaptainSection />
-      <TeamworkSection />
+
+      <CaptainSection />
+      <FeaturedSection />
+
+      {/* <TeamworkSection />
       <DeveloperSection />
       <ExploringSection /> */}
       <Footer />
