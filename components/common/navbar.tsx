@@ -157,7 +157,7 @@ export function Navbar() {
                   <NavigationMenuContent>
                     <ul className="w-48 p-2">
                       {resourceItems.map((item) => (
-                        <li key={item.href}>
+                        <li key={item.label}>
                           <NavigationMenuLink asChild>
                             <Link
                               href={item.href}
