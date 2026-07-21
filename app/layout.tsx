@@ -1,6 +1,7 @@
 import React from "react"
 import type { Metadata } from 'next'
 import { DM_Sans, Playfair_Display, Dancing_Script } from 'next/font/google'
+import { AuthProvider } from "@/lib/auth-context"
 
 import './globals.css'
 
@@ -31,7 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${playfair.variable} ${dancing.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${dmSans.variable} ${playfair.variable} ${dancing.variable} font-sans antialiased`}>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   )
 }

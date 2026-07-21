@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Navbar } from "@/components/common/navbar"
 import { Footer } from "@/components/common/footer"
 import { BarChart3, Users, BookOpen, Brain, Activity, ShieldAlert, Plus, Trash2, Edit3, X, Loader2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { supabase } from "@/lib/supabaseClient"
+import { useAuth } from "@/lib/auth-context"
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 15 },
@@ -31,6 +33,17 @@ const staggerContainer = {
 }
 
 export default function AdminPage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user || user.user_metadata?.role !== "admin") {
+        router.push("/")
+      }
+    }
+  }, [user, authLoading, router])
+  
   const [activeView, setActiveView] = useState<"overview" | "participants" | "articles" | "interventions" | "journals">("overview")
   const [articles, setArticles] = useState<any[]>([])
   const [interventions, setInterventions] = useState<any[]>([])
@@ -224,6 +237,15 @@ export default function AdminPage() {
     { name: "Cut Nyak Dien", email: "cutnyak@student.edu", personality: "High Agreeableness", progress: "Modul 3 selesai", score: "84/100" },
     { name: "Sudirman", email: "sudirman@student.edu", personality: "High Extraversion", progress: "Modul 5 selesai", score: "90/100" },
   ]
+
+  if (authLoading || !user || user.user_metadata?.role !== "admin") {
+    return (
+      <div className="min-h-screen bg-[#FBF6ED] flex flex-col items-center justify-center font-sans gap-3">
+        <Loader2 className="h-8 w-8 text-[#7c4fd4] animate-spin" />
+        <p className="text-xs text-neutral-500 font-semibold">Memeriksa otorisasi...</p>
+      </div>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-[#FBF6ED] overflow-hidden">

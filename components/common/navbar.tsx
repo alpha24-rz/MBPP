@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ChevronDown, User, LogOut, Menu, X } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -52,7 +53,8 @@ const resourceItems = [
 
 export function Navbar() {
   const router = useRouter()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { user, loading, signOut } = useAuth()
+  const isLoggedIn = !!user
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null)
 
@@ -177,24 +179,29 @@ export function Navbar() {
 
           {/* Desktop Auth Section */}
           <div className="hidden md:flex items-center gap-3">
-            {isLoggedIn ? (
+            {loading ? (
+              <div className="h-8 w-8 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+            ) : isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/80 hover:bg-primary border-2 border-white/30 hover:border-white/60 shadow-md shadow-primary/30 transition-all duration-200 hover:scale-110 outline-none">
+                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/80 hover:bg-primary border-2 border-white/30 hover:border-white/60 shadow-md shadow-primary/30 transition-all duration-200 hover:scale-110 outline-none cursor-pointer">
                     <User className="h-4 w-4 text-white" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44 mt-2 rounded-xl shadow-xl">
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer rounded-lg">
+                    <Link href="/profile" className="cursor-pointer rounded-lg flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setIsLoggedIn(false)}
-                    className="cursor-pointer text-destructive focus:text-destructive rounded-lg"
+                    onClick={async () => {
+                      await signOut()
+                      router.push("/")
+                    }}
+                    className="cursor-pointer text-destructive focus:text-destructive rounded-lg flex items-center"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
@@ -203,18 +210,18 @@ export function Navbar() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsLoggedIn(true)}
+                <Link
+                  href="/login"
                   className="px-4 py-1.5 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200"
                 >
                   Login
-                </button>
-                <button
-                  onClick={() => setIsLoggedIn(true)}
+                </Link>
+                <Link
+                  href="/register"
                   className="px-4 py-1.5 text-sm font-semibold text-white rounded-xl bg-primary/70 hover:bg-primary border border-white/20 hover:border-white/40 shadow-md shadow-primary/20 transition-all duration-200 hover:scale-105"
                 >
                   Sign up
-                </button>
+                </Link>
               </div>
             )}
           </div>
@@ -271,7 +278,11 @@ export function Navbar() {
 
               {/* Mobile Auth */}
               <div className="pt-2 border-t border-white/10">
-                {isLoggedIn ? (
+                {loading ? (
+                  <div className="flex justify-center py-2">
+                    <div className="h-6 w-6 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+                  </div>
+                ) : isLoggedIn ? (
                   <div className="space-y-1">
                     <Link
                       href="/profile"
@@ -282,8 +293,12 @@ export function Navbar() {
                       Profile
                     </Link>
                     <button
-                      onClick={() => { setIsLoggedIn(false); setMobileMenuOpen(false) }}
-                      className="flex w-full items-center gap-2 py-2 px-3 rounded-xl text-sm font-medium text-red-300 hover:text-red-200 hover:bg-white/10 transition-colors"
+                      onClick={async () => {
+                        await signOut()
+                        setMobileMenuOpen(false)
+                        router.push("/")
+                      }}
+                      className="flex w-full items-center gap-2 py-2 px-3 rounded-xl text-sm font-medium text-red-300 hover:text-red-200 hover:bg-white/10 transition-colors cursor-pointer"
                     >
                       <LogOut className="h-4 w-4" />
                       Logout
@@ -291,18 +306,20 @@ export function Navbar() {
                   </div>
                 ) : (
                   <div className="flex gap-2 pt-1">
-                    <button
-                      onClick={() => { setIsLoggedIn(true); setMobileMenuOpen(false) }}
-                      className="flex-1 py-2 text-sm font-medium text-white/80 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex-1 py-2 text-center text-sm font-medium text-white/80 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
                     >
                       Login
-                    </button>
-                    <button
-                      onClick={() => { setIsLoggedIn(true); setMobileMenuOpen(false) }}
-                      className="flex-1 py-2 text-sm font-semibold text-white rounded-xl bg-primary/70 hover:bg-primary border border-white/20 transition-all duration-200"
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex-1 py-2 text-center text-sm font-semibold text-white rounded-xl bg-primary/70 hover:bg-primary border border-white/20 transition-all duration-200"
                     >
                       Sign up
-                    </button>
+                    </Link>
                   </div>
                 )}
               </div>

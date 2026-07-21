@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient"
 import { motion, AnimatePresence } from "framer-motion"
 import { Sparkles, BookOpen, CheckCircle2, PenTool, Send, Loader2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -18,12 +19,19 @@ const fadeInUp = {
 }
 
 export default function ModuleDetailPage() {
+  const { user } = useAuth()
   const [interventions, setInterventions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
 
   // Journal form states
   const [participantName, setParticipantName] = useState("")
+
+  useEffect(() => {
+    if (user) {
+      setParticipantName(user.user_metadata?.full_name || "")
+    }
+  }, [user])
   const [journalText, setJournalText] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -240,15 +248,30 @@ export default function ModuleDetailPage() {
                             className="space-y-4 text-xs"
                           >
                             <div className="flex flex-col gap-1.5">
-                              <label className="font-bold text-[#2a1845]">Nama Lengkap / ID Partisipan</label>
+                              <div className="flex justify-between items-center">
+                                <label className="font-bold text-[#2a1845]">Nama Lengkap / ID Partisipan</label>
+                                {user && (
+                                  <span className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded font-semibold">
+                                    Terkunci via Akun
+                                  </span>
+                                )}
+                              </div>
                               <input
                                 type="text"
                                 required
+                                disabled={!!user}
                                 value={participantName}
                                 onChange={(e) => setParticipantName(e.target.value)}
                                 placeholder="Masukkan nama atau kode ID responden Anda..."
-                                className="rounded-xl border border-neutral-200 bg-[#FBF6ED]/10 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                                className={`rounded-xl border border-neutral-200 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors ${
+                                  user ? "bg-neutral-100/60 text-neutral-500 border-neutral-200 cursor-not-allowed" : "bg-[#FBF6ED]/10"
+                                }`}
                               />
+                              {!user && (
+                                <p className="text-[10px] text-[#7c4fd4] font-medium leading-relaxed mt-0.5">
+                                  💡 <strong>Tips:</strong> Anda belum masuk. <Link href="/login" className="underline hover:text-[#5e35b8]">Masuk</Link> atau <Link href="/register" className="underline hover:text-[#5e35b8]">Daftar Akun</Link> agar riwayat jurnal Anda tercatat otomatis di halaman profil Anda.
+                                </p>
+                              )}
                             </div>
 
                             <div className="flex flex-col gap-1.5">
