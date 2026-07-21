@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ChevronDown, User, LogOut, Menu, X } from "lucide-react"
 import {
   NavigationMenu,
@@ -21,30 +22,36 @@ import {
 import { cn } from "@/lib/utils"
 
 const homeSubItems = [
-  { label: "Hero", href: "#hero" },
-  { label: "What is MBPP?", href: "#what-is-mbpp" },
-  { label: "Why MBPP?", href: "#why-mbpp" },
-  { label: "Learning Journey", href: "#learning-journey" },
-  { label: "Featured Modules", href: "#featured-modules" },
-  { label: "Research", href: "#research" },
-  { label: "Team", href: "#team" },
+  { label: "What is MBPP?", href: "/#what-is-mbpp" },
+  { label: "Why MBPP?", href: "/#why-mbpp" },
+  { label: "How the Programme Works", href: "/#how-it-works" },
+  { label: "Featured Modules", href: "/#featured-modules" },
+  { label: "Research Highlights", href: "/#research-highlights" },
+  { label: "Call to Action", href: "/#cta" },
 ]
 
-const moduleItems = [
-  { label: "Module 1", href: "/modules/1" },
-  { label: "Module 2", href: "/modules/2" },
-  { label: "Module 3", href: "/modules/3" },
-  { label: "Module 4", href: "/modules/4" },
-  { label: "Module 5", href: "/modules/5" },
+const aboutSubItems = [
+  { label: "About MBPP", href: "/about#about-mbpp" },
+  { label: "Research Background", href: "/about#science-behind" },
+  { label: "Research Objectives", href: "/about#science-behind" },
+  { label: "Research Methodology", href: "/about#science-behind" },
+  { label: "About This Platform", href: "/about#science-behind" },
+  { label: "Research Information", href: "/about#research-info" },
+  { label: "Research Team", href: "/about#team" },
+  { label: "Contact", href: "/about#contact" },
 ]
+
+
 
 const resourceItems = [
-  { label: "Articles", href: "/resources/articles" },
-  { label: "Research Papers", href: "/resources/research-papers" },
-  { label: "Downloads", href: "/resources/downloads" },
+  { label: "All Resources", href: "/resources" },
+  { label: "Articles", href: "/resources" },
+  { label: "Research Papers", href: "/resources" },
+  { label: "Downloads", href: "/resources" },
 ]
 
 export function Navbar() {
+  const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null)
@@ -73,7 +80,10 @@ export function Navbar() {
 
                 {/* Home dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 h-9">
+                  <NavigationMenuTrigger
+                    onClick={() => router.push("/")}
+                    className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 h-9"
+                  >
                     Home
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -95,30 +105,18 @@ export function Navbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
-                {/* About */}
+                {/* About the Project Dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href="/about"
-                      className={cn(
-                        "inline-flex h-9 w-max items-center justify-center rounded-xl px-3 py-2 text-sm font-medium",
-                        "bg-transparent text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200"
-                      )}
-                    >
-                      About
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-
-                {/* Modules dropdown */}
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 h-9">
-                    Modules
+                  <NavigationMenuTrigger
+                    onClick={() => router.push("/about")}
+                    className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 h-9"
+                  >
+                    About the Project
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="w-44 p-2">
-                      {moduleItems.map((item) => (
-                        <li key={item.href}>
+                    <ul className="w-56 p-2">
+                      {aboutSubItems.map((item) => (
+                        <li key={item.label}>
                           <NavigationMenuLink asChild>
                             <Link
                               href={item.href}
@@ -134,9 +132,21 @@ export function Navbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
+                {/* Modules Link */}
+                <NavigationMenuItem>
+                  <Link href="/modules" passHref legacyBehavior>
+                    <NavigationMenuLink className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 py-2 flex items-center h-9 select-none cursor-pointer">
+                      Modules
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
                 {/* Resources dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 h-9">
+                  <NavigationMenuTrigger
+                    onClick={() => router.push("/resources")}
+                    className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 h-9"
+                  >
                     Resources
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -221,91 +231,40 @@ export function Navbar() {
             <div className="pt-3 space-y-1">
 
               {/* Mobile Home */}
-              <div>
-                <button
-                  onClick={() => toggleMobileItem("home")}
-                  className="flex w-full items-center justify-between py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  Home
-                  <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", mobileExpandedItem === "home" && "rotate-180")} />
-                </button>
-                {mobileExpandedItem === "home" && (
-                  <div className="mt-1 pl-4 space-y-0.5">
-                    {homeSubItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 py-1.5 px-3 rounded-lg text-sm text-white/60 hover:text-white/90 hover:bg-white/10 transition-colors"
-                      >
-                        <span className="h-1 w-1 rounded-full bg-white/40" />
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                Home
+              </Link>
 
-              {/* Mobile About */}
+              {/* Mobile About the Project */}
               <Link
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
               >
-                About
+                About the Project
               </Link>
 
               {/* Mobile Modules */}
-              <div>
-                <button
-                  onClick={() => toggleMobileItem("modules")}
-                  className="flex w-full items-center justify-between py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  Modules
-                  <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", mobileExpandedItem === "modules" && "rotate-180")} />
-                </button>
-                {mobileExpandedItem === "modules" && (
-                  <div className="mt-1 pl-4 space-y-0.5">
-                    {moduleItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 py-1.5 px-3 rounded-lg text-sm text-white/60 hover:text-white/90 hover:bg-white/10 transition-colors"
-                      >
-                        <span className="h-1 w-1 rounded-full bg-white/40" />
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Link
+                href="/modules"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                Modules
+              </Link>
 
               {/* Mobile Resources */}
-              <div>
-                <button
-                  onClick={() => toggleMobileItem("resources")}
-                  className="flex w-full items-center justify-between py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  Resources
-                  <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", mobileExpandedItem === "resources" && "rotate-180")} />
-                </button>
-                {mobileExpandedItem === "resources" && (
-                  <div className="mt-1 pl-4 space-y-0.5">
-                    {resourceItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 py-1.5 px-3 rounded-lg text-sm text-white/60 hover:text-white/90 hover:bg-white/10 transition-colors"
-                      >
-                        <span className="h-1 w-1 rounded-full bg-white/40" />
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <Link
+                href="/resources"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex py-2 px-3 rounded-xl text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                Resources
+              </Link>
 
               {/* Mobile Auth */}
               <div className="pt-2 border-t border-white/10">

@@ -1,7 +1,9 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Sparkles, Clock, BookOpen, CheckCircle } from "lucide-react"
+import { supabase } from "@/lib/supabaseClient"
 
 const moduleData = {
   id: 1,
@@ -22,6 +24,36 @@ const moduleData = {
 }
 
 export function FeaturedSection() {
+  const [topics, setTopics] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchInterventions() {
+      try {
+        const { data, error } = await supabase
+          .from("interventions")
+          .select("*")
+          .order("created_at", { ascending: true })
+        
+        if (!error && data && data.length > 0) {
+          const mapped = data.map(item => ({
+            title: item.title,
+            desc: item.desc_text
+          }))
+          setTopics(mapped)
+        } else {
+          setTopics(moduleData.topics)
+        }
+      } catch (e) {
+        console.error("Gagal memuat intervensi dari database, menggunakan fallback:", e)
+        setTopics(moduleData.topics)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchInterventions()
+  }, [])
+
   return (
     <section id="featured-modules" className="relative bg-white px-6 py-28 scroll-mt-20">
       {/* Subtle top border fade from previous section */}
@@ -78,15 +110,19 @@ export function FeaturedSection() {
               <h4 className="text-xs font-bold text-[#2a1845] tracking-wider uppercase mb-3">
                 Key Learning Outcomes
               </h4>
-              {moduleData.topics.map((topic, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h5 className="text-sm font-bold text-[#2a1845]">{topic.title}</h5>
-                    <p className="text-xs text-[#2a1845]/70 leading-relaxed mt-0.5">{topic.desc}</p>
+              {loading ? (
+                <p className="text-xs text-muted-foreground animate-pulse">Memuat hasil pembelajaran...</p>
+              ) : (
+                topics.map((topic, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h5 className="text-sm font-bold text-[#2a1845]">{topic.title}</h5>
+                      <p className="text-xs text-[#2a1845]/70 leading-relaxed mt-0.5">{topic.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Footer metadata */}
@@ -97,7 +133,7 @@ export function FeaturedSection() {
               </span>
               <span className="flex items-center gap-1.5">
                 <BookOpen className="h-4 w-4" />
-                {moduleData.sessions}
+                {loading ? "..." : `${topics.length} Sesi Intervensi`}
               </span>
             </div>
           </div>

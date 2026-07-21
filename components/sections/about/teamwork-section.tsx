@@ -31,9 +31,9 @@ const pillars = [
   },
 ]
 
-export function TeamworkSection() {
+export function TeamworkSection({ id = "science-behind" }: { id?: string }) {
   return (
-    <section id="science-behind" className="relative bg-[#FBF6ED] px-6 py-28 scroll-mt-20">
+    <section id={id} className="relative bg-[#FBF6ED] px-6 py-28 scroll-mt-20">
       {/* Subtle border fade from previous white section */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-[#FBF6ED]" />
 

@@ -1,13 +1,12 @@
-import { Navbar } from "@/components/navbar"
-import { HeroSection } from "@/components/hero-section"
-import { HomeSection } from "@/components/home-section"
-import { OwnDataSection } from "@/components/own-data-section"
-import { CaptainSection } from "@/components/captain-section"
-import { FeaturedSection } from "@/components/featured-section"
-import { TeamworkSection } from "@/components/teamwork-section"
-import { DeveloperSection } from "@/components/developer-section"
-import { ExploringSection } from "@/components/exploring-section"
-import { Footer } from "@/components/footer"
+import { Navbar } from "@/components/common/navbar"
+import { HeroSection } from "@/components/sections/home/hero-section"
+import { HomeSection } from "@/components/sections/home/home-section"
+import { OwnDataSection } from "@/components/sections/home/own-data-section"
+import { CaptainSection } from "@/components/sections/home/captain-section"
+import { FeaturedSection } from "@/components/sections/home/featured-section"
+import { TeamworkSection } from "@/components/sections/about/teamwork-section"
+import { CtaSection } from "@/components/sections/home/cta-section"
+import { Footer } from "@/components/common/footer"
 
 export default function Page() {
   return (
@@ -20,9 +19,8 @@ export default function Page() {
       <CaptainSection />
       <FeaturedSection />
 
-      <TeamworkSection />
-      <DeveloperSection />
-      {/* <ExploringSection /> */}
+      <TeamworkSection id="research-highlights" />
+      <CtaSection />
       <Footer />
     </main>
   )

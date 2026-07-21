@@ -5,8 +5,27 @@ __v0_jsx-dev-runtime.ts
 instrumentation-client.js
 instrumentation-client.ts
 
-# Common ignores
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# Next.js build output
 .next/
+out/
+build/
+
+# Environment files (Mencegah kebocoran API Key / Kredensial Supabase)
+.env
+.env.local
 .env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.test
+.env.production
+
+# System Files
 .DS_Store
+Thumbs.db
+*.tsbuildinfo

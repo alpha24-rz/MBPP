@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { motion } from "framer-motion"
 
 const team = [
   {
@@ -35,6 +36,29 @@ const team = [
   },
 ]
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 60,
+      damping: 12,
+    },
+  },
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+}
+
 export function DeveloperSection() {
   const [active, setActive] = useState<number | null>(null)
 
@@ -45,18 +69,30 @@ export function DeveloperSection() {
 
       <div className="relative mx-auto max-w-6xl">
         {/* Header */}
-        <div className="mx-auto max-w-4xl text-center mb-16">
-          <p className="mb-3 font-script text-3xl text-primary">Meet The Team</p>
-          <h2 className="mb-6 font-serif text-3xl font-bold leading-tight text-[#2a1845] md:text-4xl lg:text-5xl">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="mx-auto max-w-4xl text-center mb-16"
+        >
+          <motion.p variants={fadeInUp} className="mb-3 font-script text-3xl text-primary">Meet The Team</motion.p>
+          <motion.h2 variants={fadeInUp} className="mb-6 font-serif text-3xl font-bold leading-tight text-[#2a1845] md:text-4xl lg:text-5xl">
             Orang-Orang di Balik Riset Ini
-          </h2>
-          <p className="mx-auto max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
+          </motion.h2>
+          <motion.p variants={fadeInUp} className="mx-auto max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
             Tim peneliti dan kolaborator lintas disiplin yang mendedikasikan keahlian mereka untuk merancang, menguji, dan menyebarluaskan program intervensi MBPP.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Desktop Layout: Sleek Accordion */}
-        <div className="hidden md:flex mx-auto max-w-5xl h-[450px] overflow-hidden rounded-3xl border border-[#e8e0f7] bg-white/50 shadow-xl shadow-purple-950/5">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ type: "spring", stiffness: 50, damping: 15 }}
+          className="hidden md:flex mx-auto max-w-5xl h-[450px] overflow-hidden rounded-3xl border border-[#e8e0f7] bg-white/50 shadow-xl shadow-purple-950/5"
+        >
           {team.map((member, i) => {
             const isActive = active === i
             return (
@@ -119,7 +155,7 @@ export function DeveloperSection() {
                   <div
                     className="transition-all duration-500 ease-in-out overflow-hidden"
                     style={{
-                      maxHeight: isActive ? "50px" : "0px",
+                      maxHeight: isActive ? "55px" : "0px",
                       opacity: isActive ? 1 : 0,
                       marginTop: isActive ? "8px" : "0px",
                     }}
@@ -132,14 +168,22 @@ export function DeveloperSection() {
               </div>
             )
           })}
-        </div>
+        </motion.div>
 
         {/* Mobile Layout: Premium Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:hidden gap-6">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={staggerContainer}
+          className="grid grid-cols-1 sm:grid-cols-2 md:hidden gap-6"
+        >
           {team.map((member) => (
-            <div
+            <motion.div
+              variants={fadeInUp}
+              whileHover={{ y: -5 }}
               key={member.name}
-              className="flex flex-col rounded-3xl border border-[#e8e0f7] bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+              className="flex flex-col rounded-3xl border border-[#e8e0f7] bg-white p-5 shadow-sm hover:shadow-md transition-all duration-300"
             >
               {/* Photo */}
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl mb-4 bg-muted">
@@ -168,9 +212,9 @@ export function DeveloperSection() {
               <p className="text-xs text-foreground/75 leading-relaxed">
                 Nama Panggilan: <span className="font-semibold text-[#2a1845]">{member.nickname}</span>
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )
