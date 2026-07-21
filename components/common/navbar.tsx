@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ChevronDown, User, LogOut, Menu, X } from "lucide-react"
+import { ChevronDown, User, LogOut, Menu, X, LayoutDashboard } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import {
   NavigationMenu,
@@ -188,7 +188,18 @@ export function Navbar() {
                     <User className="h-4 w-4 text-white" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-44 mt-2 rounded-xl shadow-xl">
+                <DropdownMenuContent align="end" className="w-48 mt-2 rounded-xl shadow-xl">
+                  {user && user.user_metadata?.role === "admin" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="cursor-pointer rounded-lg flex items-center font-semibold text-primary">
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          Admin Console
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="cursor-pointer rounded-lg flex items-center">
                       <User className="mr-2 h-4 w-4" />
@@ -284,6 +295,16 @@ export function Navbar() {
                   </div>
                 ) : isLoggedIn ? (
                   <div className="space-y-1">
+                    {user && user.user_metadata?.role === "admin" && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 py-2 px-3 rounded-xl text-sm font-semibold text-[#7c4fd4] hover:text-[#5e35b8] hover:bg-white/10 transition-colors"
+                      >
+                        <LayoutDashboard className="h-4 w-4" />
+                        Admin Console
+                      </Link>
+                    )}
                     <Link
                       href="/profile"
                       onClick={() => setMobileMenuOpen(false)}

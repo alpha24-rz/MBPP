@@ -95,18 +95,22 @@ const staggerContainer = {
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<"articles" | "papers" | "downloads">("articles")
   const [articles, setArticles] = useState<any[]>([])
+  const [papers, setPapers] = useState<any[]>([])
+  const [downloads, setDownloads] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchArticles() {
+    async function fetchAllResources() {
+      setLoading(true)
       try {
-        const { data, error } = await supabase
+        // Fetch Articles
+        const { data: artData } = await supabase
           .from("articles")
           .select("*")
           .order("created_at", { ascending: false })
         
-        if (!error && data && data.length > 0) {
-          const mapped = data.map(item => ({
+        if (artData && artData.length > 0) {
+          setArticles(artData.map(item => ({
             title: item.title,
             desc: item.desc_text,
             date: new Date(item.created_at || Date.now()).toLocaleDateString("id-ID", {
@@ -116,19 +120,44 @@ export default function ResourcesPage() {
             }),
             readTime: item.read_time,
             category: item.category
-          }))
-          setArticles(mapped)
+          })))
         } else {
           setArticles(resources.articles)
+        }
+
+        // Fetch Papers
+        const { data: paperData } = await supabase
+          .from("research_papers")
+          .select("*")
+          .order("created_at", { ascending: false })
+        
+        if (paperData && paperData.length > 0) {
+          setPapers(paperData)
+        } else {
+          setPapers(resources.papers)
+        }
+
+        // Fetch Downloads
+        const { data: dlData } = await supabase
+          .from("downloads")
+          .select("*")
+          .order("created_at", { ascending: false })
+        
+        if (dlData && dlData.length > 0) {
+          setDownloads(dlData)
+        } else {
+          setDownloads(resources.downloads)
         }
       } catch (e) {
         console.error("Gagal mengambil data dari Supabase, menggunakan fallback:", e)
         setArticles(resources.articles)
+        setPapers(resources.papers)
+        setDownloads(resources.downloads)
       } finally {
         setLoading(false)
       }
     }
-    fetchArticles()
+    fetchAllResources()
   }, [])
 
   return (
@@ -251,64 +280,75 @@ export default function ResourcesPage() {
               {/* Research papers tab */}
               {activeTab === "papers" && (
                 <div className="space-y-6">
-                  {resources.papers.map((paper, idx) => (
-                    <motion.div
-                      variants={fadeInUp}
-                      whileHover={{ y: -4, boxShadow: "0 8px 24px -10px rgba(42, 24, 69, 0.1)" }}
-                      key={idx}
-                      className="p-6 rounded-3xl border border-[#e8e0f7] bg-white transition-all duration-300"
-                    >
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <h3 className="text-base font-bold text-[#2a1845] leading-snug">{paper.title}</h3>
-                        <motion.a
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          href={`https://doi.org/${paper.doi}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-[#7c4fd4] hover:bg-purple-50 transition-all"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </motion.a>
-                      </div>
-                      <p className="text-xs text-[#7c4fd4] font-semibold mb-2">{paper.journal} ({paper.year})</p>
-                      <p className="text-xs text-foreground/70 mb-4">Penulis: {paper.authors}</p>
-                      <div className="text-[10px] font-mono text-muted-foreground">DOI: {paper.doi}</div>
-                    </motion.div>
-                  ))}
+                  {papers.length === 0 ? (
+                    <div className="text-center py-10 text-xs text-muted-foreground">Tidak ada publikasi riset.</div>
+                  ) : (
+                    papers.map((paper, idx) => (
+                      <motion.div
+                        variants={fadeInUp}
+                        whileHover={{ y: -4, boxShadow: "0 8px 24px -10px rgba(42, 24, 69, 0.1)" }}
+                        key={idx}
+                        className="p-6 rounded-3xl border border-[#e8e0f7] bg-white transition-all duration-300"
+                      >
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <h3 className="text-base font-bold text-[#2a1845] leading-snug">{paper.title}</h3>
+                          <motion.a
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            href={paper.doi ? (paper.doi.startsWith("http") ? paper.doi : `https://doi.org/${paper.doi}`) : "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-[#7c4fd4] hover:bg-purple-50 transition-all"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </motion.a>
+                        </div>
+                        <p className="text-xs text-[#7c4fd4] font-semibold mb-2">{paper.journal} ({paper.year})</p>
+                        <p className="text-xs text-foreground/70 mb-4">Penulis: {paper.authors}</p>
+                        <div className="text-[10px] font-mono text-muted-foreground">DOI: {paper.doi}</div>
+                      </motion.div>
+                    ))
+                  )}
                 </div>
               )}
 
               {/* Downloads tab */}
               {activeTab === "downloads" && (
                 <div className="space-y-4">
-                  {resources.downloads.map((dl, idx) => (
-                    <motion.div
-                      variants={fadeInUp}
-                      whileHover={{ y: -3, backgroundColor: "rgba(251, 246, 237, 0.4)" }}
-                      key={idx}
-                      className="flex items-center justify-between gap-4 p-5 rounded-2xl border border-border bg-[#FBF6ED]/10 transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#7c4fd4] border border-[#e8e0f7]">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-[#2a1845]">{dl.name}</h4>
-                          <p className="text-xs text-foreground/60">{dl.type} • {dl.size}</p>
-                        </div>
-                      </div>
-
-                      <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="flex items-center gap-1 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] text-white px-4 py-2 text-xs font-semibold transition-all"
+                  {downloads.length === 0 ? (
+                    <div className="text-center py-10 text-xs text-muted-foreground">Tidak ada bahan unduhan.</div>
+                  ) : (
+                    downloads.map((dl, idx) => (
+                      <motion.div
+                        variants={fadeInUp}
+                        whileHover={{ y: -3, backgroundColor: "rgba(251, 246, 237, 0.4)" }}
+                        key={idx}
+                        className="flex items-center justify-between gap-4 p-5 rounded-2xl border border-border bg-[#FBF6ED]/10 transition-all duration-200"
                       >
-                        <Download className="h-3.5 w-3.5" />
-                        Unduh
-                      </motion.button>
-                    </motion.div>
-                  ))}
+                        <div className="flex items-center gap-3.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-[#7c4fd4] border border-[#e8e0f7]">
+                            <FileText className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-[#2a1845]">{dl.name}</h4>
+                            <p className="text-xs text-foreground/60">{dl.type} • {dl.size}</p>
+                          </div>
+                        </div>
+
+                        <motion.a
+                          href={dl.url || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          className="flex items-center gap-1 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] text-white px-4 py-2 text-xs font-semibold transition-all cursor-pointer"
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                          Unduh
+                        </motion.a>
+                      </motion.div>
+                    ))
+                  )}
                 </div>
               )}
             </motion.div>

@@ -44,10 +44,12 @@ export default function AdminPage() {
     }
   }, [user, authLoading, router])
   
-  const [activeView, setActiveView] = useState<"overview" | "participants" | "articles" | "interventions" | "journals">("overview")
+  const [activeView, setActiveView] = useState<"overview" | "participants" | "articles" | "interventions" | "journals" | "papers" | "downloads">("overview")
   const [articles, setArticles] = useState<any[]>([])
   const [interventions, setInterventions] = useState<any[]>([])
   const [journals, setJournals] = useState<any[]>([])
+  const [papers, setPapers] = useState<any[]>([])
+  const [downloads, setDownloads] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   // Form states
@@ -65,6 +67,25 @@ export default function AdminPage() {
   const [interventionForm, setInterventionForm] = useState({
     title: "",
     desc_text: "",
+  })
+
+  const [showPaperModal, setShowPaperModal] = useState(false)
+  const [editingPaper, setEditingPaper] = useState<any | null>(null)
+  const [paperForm, setPaperForm] = useState({
+    title: "",
+    journal: "",
+    authors: "",
+    year: "",
+    doi: "",
+  })
+
+  const [showDownloadModal, setShowDownloadModal] = useState(false)
+  const [editingDownload, setEditingDownload] = useState<any | null>(null)
+  const [downloadForm, setDownloadForm] = useState({
+    name: "",
+    type: "Workbook Jurnal Terbimbing",
+    size: "",
+    url: "",
   })
 
   async function fetchDbData() {
@@ -87,10 +108,129 @@ export default function AdminPage() {
         .select("*")
         .order("created_at", { ascending: false })
       if (!jErr && jData) setJournals(jData)
+
+      // Fetch Papers
+      const { data: paperData } = await supabase
+        .from("research_papers")
+        .select("*")
+        .order("created_at", { ascending: false })
+      if (paperData) setPapers(paperData)
+
+      // Fetch Downloads
+      const { data: dlData } = await supabase
+        .from("downloads")
+        .select("*")
+        .order("created_at", { ascending: false })
+      if (dlData) setDownloads(dlData)
     } catch (error) {
       console.error("Gagal memuat data dari Supabase:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Paper CRUD Handlers
+  const handleOpenAddPaper = () => {
+    setEditingPaper(null)
+    setPaperForm({ title: "", journal: "", authors: "", year: "", doi: "" })
+    setShowPaperModal(true)
+  }
+
+  const handleOpenEditPaper = (paper: any) => {
+    setEditingPaper(paper)
+    setPaperForm({
+      title: paper.title,
+      journal: paper.journal,
+      authors: paper.authors,
+      year: paper.year,
+      doi: paper.doi,
+    })
+    setShowPaperModal(true)
+  }
+
+  const handleSavePaper = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!paperForm.title.trim()) return
+    try {
+      if (editingPaper) {
+        const { error } = await supabase
+          .from("research_papers")
+          .update(paperForm)
+          .eq("id", editingPaper.id)
+        if (error) throw error
+      } else {
+        const { error } = await supabase
+          .from("research_papers")
+          .insert([paperForm])
+        if (error) throw error
+      }
+      setShowPaperModal(false)
+      fetchDbData()
+    } catch (error) {
+      alert("Error saat menyimpan publikasi: " + (error as any).message)
+    }
+  }
+
+  const handleDeletePaper = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus publikasi riset ini?")) return
+    try {
+      const { error } = await supabase.from("research_papers").delete().eq("id", id)
+      if (error) throw error
+      fetchDbData()
+    } catch (error) {
+      alert("Error saat menghapus publikasi: " + (error as any).message)
+    }
+  }
+
+  // Download CRUD Handlers
+  const handleOpenAddDownload = () => {
+    setEditingDownload(null)
+    setDownloadForm({ name: "", type: "Workbook Jurnal Terbimbing", size: "", url: "" })
+    setShowDownloadModal(true)
+  }
+
+  const handleOpenEditDownload = (dl: any) => {
+    setEditingDownload(dl)
+    setDownloadForm({
+      name: dl.name,
+      type: dl.type,
+      size: dl.size,
+      url: dl.url || "",
+    })
+    setShowDownloadModal(true)
+  }
+
+  const handleSaveDownload = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!downloadForm.name.trim()) return
+    try {
+      if (editingDownload) {
+        const { error } = await supabase
+          .from("downloads")
+          .update(downloadForm)
+          .eq("id", editingDownload.id)
+        if (error) throw error
+      } else {
+        const { error } = await supabase
+          .from("downloads")
+          .insert([downloadForm])
+        if (error) throw error
+      }
+      setShowDownloadModal(false)
+      fetchDbData()
+    } catch (error) {
+      alert("Error saat menyimpan bahan unduhan: " + (error as any).message)
+    }
+  }
+
+  const handleDeleteDownload = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus bahan unduhan ini?")) return
+    try {
+      const { error } = await supabase.from("downloads").delete().eq("id", id)
+      if (error) throw error
+      fetchDbData()
+    } catch (error) {
+      alert("Error saat menghapus bahan unduhan: " + (error as any).message)
     }
   }
 
@@ -223,20 +363,59 @@ export default function AdminPage() {
     }
   }
 
+  // Extract unique participant names from the journals list
+  const uniqueParticipants = Array.from(new Set(journals.map(j => j.participant_name).filter(Boolean)))
+
   const stats = [
-    { title: "Total Partisipan", val: "182 Peserta", icon: Users, change: "+12 minggu ini", color: "text-[#7c4fd4] bg-purple-50" },
-    { title: "Sesi Intervensi", val: "6 Sesi Aktif", icon: BookOpen, change: "Dalam pelaksanaan", color: "text-amber-600 bg-amber-50" },
-    { title: "Tingkat Kelulusan", val: "94.2%", icon: Activity, change: "+2.1% dibanding batch 1", color: "text-emerald-600 bg-emerald-50" },
-    { title: "Digital Self-Efficacy", val: "+24.5%", icon: Brain, change: "Peningkatan rata-rata", color: "text-sky-600 bg-sky-50" },
+    { 
+      title: "Total Partisipan", 
+      val: `${uniqueParticipants.length} Peserta`, 
+      icon: Users, 
+      change: "Aktif dalam program", 
+      color: "text-[#7c4fd4] bg-purple-50" 
+    },
+    { 
+      title: "Sesi Intervensi", 
+      val: `${interventions.length} Sesi Aktif`, 
+      icon: BookOpen, 
+      change: "Tersedia di kurikulum", 
+      color: "text-amber-600 bg-amber-50" 
+    },
+    { 
+      title: "Refleksi Jurnal", 
+      val: `${journals.length} Dikirim`, 
+      icon: Activity, 
+      change: "Telah diarsipkan", 
+      color: "text-emerald-600 bg-emerald-50" 
+    },
+    { 
+      title: "Artikel Edukasi", 
+      val: `${articles.length} Publikasi`, 
+      icon: Brain, 
+      change: "Artikel aktif", 
+      color: "text-sky-600 bg-sky-50" 
+    },
   ]
 
-  const participants = [
-    { name: "Ahmad Dahlan", email: "ahmad@student.edu", personality: "High Conscientiousness", progress: "Modul 5 selesai", score: "88/100" },
-    { name: "Dewi Sartika", email: "dewi@student.edu", personality: "High Openness", progress: "Modul 4 selesai", score: "92/100" },
-    { name: "Budi Utomo", email: "budi@student.edu", personality: "High Neuroticism", progress: "Modul 5 selesai", score: "78/100" },
-    { name: "Cut Nyak Dien", email: "cutnyak@student.edu", personality: "High Agreeableness", progress: "Modul 3 selesai", score: "84/100" },
-    { name: "Sudirman", email: "sudirman@student.edu", personality: "High Extraversion", progress: "Modul 5 selesai", score: "90/100" },
-  ]
+  const participants = uniqueParticipants.map((name) => {
+    // Filter journals written by this participant
+    const userJournals = journals.filter(j => j.participant_name === name)
+    
+    // Find unique sessions completed by the user
+    const completedSessions = new Set(userJournals.map(j => j.intervention_title))
+    const totalCompleted = completedSessions.size
+    
+    // Format email based on their name
+    const email = name.toLowerCase().replace(/[^a-z0-9]/g, "") + "@student.edu"
+    
+    return {
+      name: name,
+      email: email,
+      personality: "Partisipan MBPP",
+      progress: `${totalCompleted} dari ${interventions.length || 5} Sesi`,
+      score: `${userJournals.length} Refleksi`
+    }
+  })
 
   if (authLoading || !user || user.user_metadata?.role !== "admin") {
     return (
@@ -329,12 +508,34 @@ export default function AdminPage() {
             </button>
             <button
               onClick={() => setActiveView("journals")}
-              className={`text-sm font-bold pb-2 transition-all relative ${
+              className={`text-sm font-bold pb-2 transition-all relative cursor-pointer ${
                 activeView === "journals" ? "text-[#7c4fd4]" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Jurnal Refleksi Peserta
               {activeView === "journals" && (
+                <motion.div layoutId="activeTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7c4fd4]" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveView("papers")}
+              className={`text-sm font-bold pb-2 transition-all relative cursor-pointer ${
+                activeView === "papers" ? "text-[#7c4fd4]" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Kelola Publikasi Riset
+              {activeView === "papers" && (
+                <motion.div layoutId="activeTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7c4fd4]" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveView("downloads")}
+              className={`text-sm font-bold pb-2 transition-all relative cursor-pointer ${
+                activeView === "downloads" ? "text-[#7c4fd4]" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Kelola Bahan Unduhan
+              {activeView === "downloads" && (
                 <motion.div layoutId="activeTabUnderline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7c4fd4]" />
               )}
             </button>
@@ -552,7 +753,7 @@ export default function AdminPage() {
                     <h3 className="text-lg font-bold text-[#2a1845]">Jurnal Refleksi Peserta</h3>
                     <button
                       onClick={fetchDbData}
-                      className="text-xs text-[#7c4fd4] hover:text-[#5e35b8] font-bold"
+                      className="text-xs text-[#7c4fd4] hover:text-[#5e35b8] font-bold cursor-pointer"
                     >
                       Refresh Data
                     </button>
@@ -587,6 +788,113 @@ export default function AdminPage() {
                           <p className="text-xs text-foreground/80 leading-relaxed bg-[#FBF6ED]/30 p-3.5 rounded-xl border border-purple-50">
                             {j.journal_text}
                           </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* Kelola Publikasi Riset View */}
+              {activeView === "papers" && (
+                <motion.div variants={fadeInUp} className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-bold text-[#2a1845]">Daftar Publikasi Riset</h3>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleOpenAddPaper}
+                      className="flex items-center gap-1.5 rounded-xl bg-[#7c4fd4] hover:bg-[#5e35b8] text-white px-4 py-2 text-xs font-semibold shadow transition-all duration-200 cursor-pointer"
+                    >
+                      <Plus className="h-4 w-4" /> Tambah Publikasi
+                    </motion.button>
+                  </div>
+
+                  {loading ? (
+                    <div className="flex justify-center items-center py-12">
+                      <Loader2 className="h-8 w-8 text-[#7c4fd4] animate-spin" />
+                    </div>
+                  ) : papers.length === 0 ? (
+                    <div className="text-center py-12 border border-dashed border-border rounded-2xl text-muted-foreground text-xs">
+                      Tidak ada publikasi riset ditemukan. Pastikan Supabase sudah terkonfigurasi.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                      {papers.map((paper) => (
+                        <div key={paper.id} className="p-5 rounded-2xl border border-border bg-white flex justify-between items-start gap-4">
+                          <div className="space-y-1 flex-1">
+                            <h4 className="text-sm font-bold text-[#2a1845]">{paper.title}</h4>
+                            <p className="text-xs text-[#7c4fd4] font-semibold">{paper.journal} ({paper.year})</p>
+                            <p className="text-xs text-foreground/60">Penulis: {paper.authors}</p>
+                            <span className="inline-block text-[10px] font-mono text-muted-foreground">DOI: {paper.doi}</span>
+                          </div>
+                          <div className="flex gap-2 shrink-0">
+                            <button
+                              onClick={() => handleOpenEditPaper(paper)}
+                              className="p-2 rounded-lg border border-border text-[#7c4fd4] hover:bg-purple-50 transition-colors cursor-pointer"
+                            >
+                              <Edit3 className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeletePaper(paper.id)}
+                              className="p-2 rounded-lg border border-border text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* Kelola Bahan Unduhan View */}
+              {activeView === "downloads" && (
+                <motion.div variants={fadeInUp} className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-bold text-[#2a1845]">Daftar Bahan Unduhan</h3>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleOpenAddDownload}
+                      className="flex items-center gap-1.5 rounded-xl bg-[#7c4fd4] hover:bg-[#5e35b8] text-white px-4 py-2 text-xs font-semibold shadow transition-all duration-200 cursor-pointer"
+                    >
+                      <Plus className="h-4 w-4" /> Tambah Bahan Unduhan
+                    </motion.button>
+                  </div>
+
+                  {loading ? (
+                    <div className="flex justify-center items-center py-12">
+                      <Loader2 className="h-8 w-8 text-[#7c4fd4] animate-spin" />
+                    </div>
+                  ) : downloads.length === 0 ? (
+                    <div className="text-center py-12 border border-dashed border-border rounded-2xl text-muted-foreground text-xs">
+                      Tidak ada bahan unduhan ditemukan. Pastikan Supabase sudah terkonfigurasi.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                      {downloads.map((dl) => (
+                        <div key={dl.id} className="p-5 rounded-2xl border border-border bg-[#FBF6ED]/10 flex justify-between items-start gap-4">
+                          <div className="space-y-1 flex-1">
+                            <h4 className="text-sm font-bold text-[#2a1845]">{dl.name}</h4>
+                            <p className="text-xs text-foreground/60">{dl.type} • {dl.size}</p>
+                            <span className="inline-block text-[10px] text-muted-foreground truncate max-w-md">URL: {dl.url || "-"}</span>
+                          </div>
+                          <div className="flex gap-2 shrink-0">
+                            <button
+                              onClick={() => handleOpenEditDownload(dl)}
+                              className="p-2 rounded-lg border border-border text-[#7c4fd4] hover:bg-purple-50 transition-colors cursor-pointer"
+                            >
+                              <Edit3 className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteDownload(dl.id)}
+                              className="p-2 rounded-lg border border-border text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -737,7 +1045,182 @@ export default function AdminPage() {
           </motion.div>
         </div>
       )}
+      {/* RESEARCH PAPER MODAL */}
+      {showPaperModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md bg-white rounded-3xl p-6 border border-border shadow-2xl relative"
+          >
+            <button
+              onClick={() => setShowPaperModal(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <X className="h-5 w-5" />
+            </button>
 
+            <h3 className="text-base font-bold text-[#2a1845] mb-5">
+              {editingPaper ? "Edit Publikasi Riset" : "Tambah Publikasi Riset Baru"}
+            </h3>
+
+            <form onSubmit={handleSavePaper} className="space-y-4 text-xs">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-bold text-[#2a1845]">Judul Publikasi / Paper</label>
+                <input
+                  type="text"
+                  required
+                  value={paperForm.title}
+                  onChange={(e) => setPaperForm({ ...paperForm, title: e.target.value })}
+                  placeholder="Judul jurnal..."
+                  className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="font-bold text-[#2a1845]">Nama Jurnal</label>
+                <input
+                  type="text"
+                  required
+                  value={paperForm.journal}
+                  onChange={(e) => setPaperForm({ ...paperForm, journal: e.target.value })}
+                  placeholder="Contoh: Frontiers in Psychology"
+                  className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="font-bold text-[#2a1845]">Penulis (Authors)</label>
+                <input
+                  type="text"
+                  required
+                  value={paperForm.authors}
+                  onChange={(e) => setPaperForm({ ...paperForm, authors: e.target.value })}
+                  placeholder="Contoh: Riswandi, Arif, M. R. H., Alwadi, R."
+                  className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-bold text-[#2a1845]">Tahun Terbit</label>
+                  <input
+                    type="text"
+                    required
+                    value={paperForm.year}
+                    onChange={(e) => setPaperForm({ ...paperForm, year: e.target.value })}
+                    placeholder="Contoh: 2026"
+                    className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-bold text-[#2a1845]">DOI / Link Tautan</label>
+                  <input
+                    type="text"
+                    required
+                    value={paperForm.doi}
+                    onChange={(e) => setPaperForm({ ...paperForm, doi: e.target.value })}
+                    placeholder="Contoh: 10.3389/fpsyg.2025.992812"
+                    className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                type="submit"
+                className="w-full rounded-xl bg-gradient-to-r from-[#7c4fd4] to-[#5e35b8] py-3 font-bold text-white shadow transition-all duration-200 mt-2 cursor-pointer"
+              >
+                Simpan Publikasi
+              </motion.button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* DOWNLOADS MODAL */}
+      {showDownloadModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md bg-white rounded-3xl p-6 border border-border shadow-2xl relative"
+          >
+            <button
+              onClick={() => setShowDownloadModal(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <h3 className="text-base font-bold text-[#2a1845] mb-5">
+              {editingDownload ? "Edit Bahan Unduhan" : "Tambah Bahan Unduhan Baru"}
+            </h3>
+
+            <form onSubmit={handleSaveDownload} className="space-y-4 text-xs">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-bold text-[#2a1845]">Nama File / Judul Unduhan</label>
+                <input
+                  type="text"
+                  required
+                  value={downloadForm.name}
+                  onChange={(e) => setDownloadForm({ ...downloadForm, name: e.target.value })}
+                  placeholder="Contoh: MBPP Workbook.pdf"
+                  className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="font-bold text-[#2a1845]">Tipe Bahan / Dokumen</label>
+                <select
+                  value={downloadForm.type}
+                  onChange={(e) => setDownloadForm({ ...downloadForm, type: e.target.value })}
+                  className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                >
+                  <option value="Workbook Jurnal Terbimbing">Workbook Jurnal Terbimbing</option>
+                  <option value="Panduan Penilaian Mandiri">Panduan Penilaian Mandiri</option>
+                  <option value="Lembar Panduan Praktis">Lembar Panduan Praktis</option>
+                  <option value="Dokumen Riset Tambahan">Dokumen Riset Tambahan</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-bold text-[#2a1845]">Ukuran File</label>
+                  <input
+                    type="text"
+                    required
+                    value={downloadForm.size}
+                    onChange={(e) => setDownloadForm({ ...downloadForm, size: e.target.value })}
+                    placeholder="Contoh: 4.2 MB"
+                    className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-bold text-[#2a1845]">URL File Unduhan</label>
+                  <input
+                    type="text"
+                    value={downloadForm.url}
+                    onChange={(e) => setDownloadForm({ ...downloadForm, url: e.target.value })}
+                    placeholder="Tautan PDF/dokumen..."
+                    className="rounded-xl border border-border bg-[#FBF6ED]/20 px-3.5 py-2.5 outline-none focus:border-[#7c4fd4] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                type="submit"
+                className="w-full rounded-xl bg-gradient-to-r from-[#7c4fd4] to-[#5e35b8] py-3 font-bold text-white shadow transition-all duration-200 mt-2 cursor-pointer"
+              >
+                Simpan Bahan Unduhan
+              </motion.button>
+            </form>
+          </motion.div>
+        </div>
+      )}
       <Footer />
     </main>
   )
