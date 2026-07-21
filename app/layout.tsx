@@ -21,8 +21,8 @@ const dancing = Dancing_Script({
 })
 
 export const metadata: Metadata = {
-  title: 'Aether - Your Creative Workspace in the Cloud',
-  description: 'A beautiful, personal workspace where your ideas take flight. Create, collaborate, and build without limits.',
+  title: 'MBPP - Mindfulness-Based Psychoeducation Programme',
+  description: 'Platform edukasi berbasis penelitian ilmiah (Fakultas Psikologi UNM) untuk membantu Generasi Z membangun hubungan sehat dengan AI melalui kesadaran diri (mindfulness) dan kekuatan karakter.',
 }
 
 export default function RootLayout({
