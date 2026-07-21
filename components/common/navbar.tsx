@@ -134,11 +134,14 @@ export function Navbar() {
 
                 {/* Modules Link */}
                 <NavigationMenuItem>
-                  <Link href="/modules" passHref legacyBehavior>
-                    <NavigationMenuLink className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 py-2 flex items-center h-9 select-none cursor-pointer">
+                  <NavigationMenuLink asChild>
+                    <Link
+                      href="/modules"
+                      className="bg-transparent hover:bg-white/10 text-white/80 hover:text-white text-sm font-medium transition-all duration-200 rounded-xl px-3 py-2 flex items-center h-9 select-none cursor-pointer"
+                    >
                       Modules
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 {/* Resources dropdown */}

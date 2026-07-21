@@ -200,7 +200,7 @@ export default function ModulesPage() {
                       </span>
                     </div>
 
-                    <Link href={`/modules/${mod.id}`} passHref legacyBehavior>
+                    <Link href={`/modules/${mod.id}`}>
                       <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
