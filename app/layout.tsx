@@ -21,7 +21,7 @@ const dancing = Dancing_Script({
 })
 
 export const metadata: Metadata = {
-  title: 'MBPP - Mindfulness-Based Psychoeducation Programme',
+  title: 'Ai Intimacy',
   description: 'Platform edukasi berbasis penelitian ilmiah (Fakultas Psikologi UNM) untuk membantu Generasi Z membangun hubungan sehat dengan AI melalui kesadaran diri (mindfulness) dan kekuatan karakter.',
   icons: {
     icon: '/logo.svg',
