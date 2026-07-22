@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ChevronDown, User, LogOut, Menu, X, LayoutDashboard } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
@@ -90,6 +91,13 @@ export function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
+          <Image
+            src="/logo.svg"
+            alt="Ai Intimacy Logo"
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-full object-cover shadow-sm transition-transform duration-200 group-hover:scale-105"
+          />
           <span
             className={cn(
               "font-serif text-xl font-bold tracking-tight transition-colors duration-200",
