@@ -91,6 +91,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: 'RH8JnRsrK7FUAVd677LagA-jZNzYy9ZFwcBXijQ3Qkk',
+  },
 }
 
 // JSON-LD Structured Data for Google Rich Snippets
