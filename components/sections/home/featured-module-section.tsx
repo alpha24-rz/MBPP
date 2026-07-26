@@ -23,7 +23,7 @@ const moduleData = {
   sessions: "1 Sesi Intervensi",
 }
 
-export function FeaturedSection() {
+export function FeaturedModuleSection() {
   const [topics, setTopics] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -143,3 +143,4 @@ export function FeaturedSection() {
   )
 }
 
+export const FeaturedSection = FeaturedModuleSection

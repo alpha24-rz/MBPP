@@ -39,10 +39,9 @@ const steps = [
   },
 ]
 
-export function CaptainSection() {
+export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="relative bg-[#FBF6ED] px-6 py-28 scroll-mt-20">
-
       {/* Header */}
       <div className="mx-auto max-w-4xl text-center mb-20">
         <p className="mb-3 font-script text-3xl text-primary">The Mechanism</p>
@@ -64,7 +63,6 @@ export function CaptainSection() {
               <div key={step.number} className="relative flex flex-col group">
                 {/* Card */}
                 <div className="flex flex-col h-full rounded-3xl border border-[#e8e0f7] bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 p-7">
-
                   {/* Number + Icon */}
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7c4fd4] to-[#5e35b8] shadow-md shadow-purple-200">
@@ -117,3 +115,4 @@ export function CaptainSection() {
   )
 }
 
+export const CaptainSection = HowItWorksSection

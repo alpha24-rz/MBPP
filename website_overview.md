@@ -26,10 +26,11 @@ Website ini dikembangkan menggunakan **Next.js** dan **Tailwind CSS**. Berikut a
 ### 1. Halaman Utama / Beranda (`/`)
 *   **File Entry**: [page.tsx](file:///home/alpha/Documents/PKM/app/page.tsx)
 *   **Komponen Utama**:
-    *   [hero-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/hero-section.tsx): Menampilkan visual interaktif serta mengenalkan pilar utama (*AI Awareness*, *Big Five*, *Self Reflection*, *Journaling*).
-    *   [home-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/home-section.tsx): Menjabarkan pilar dasar MBPP (*Mindfulness*, *Big Five*, *Responsible AI Literacy*).
-    *   [own-data-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/own-data-section.tsx): Membandingkan tantangan digital dan solusi MBPP.
-    *   [captain-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/captain-section.tsx): Menggambarkan mekanisme program intervensi berbasis eksperimen dari *Pre-test* hingga *Post-test*.
+    *   [hero-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/hero-section.tsx): Menampilkan visual hero interaktif.
+    *   [what-is-mbpp-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/what-is-mbpp-section.tsx): Menjabarkan gambaran umum dan pilar dasar MBPP (*Mindfulness* & *Big Five*).
+    *   [why-mbpp-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/why-mbpp-section.tsx): Membandingkan tantangan digital Gen Z dan solusi MBPP.
+    *   [how-it-works-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/how-it-works-section.tsx): Menggambarkan alur dan mekanisme program intervensi dari *Pre-test* hingga *Post-test*.
+    *   [featured-module-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/featured-module-section.tsx): Menampilkan modul pembelajaran unggulan MBPP.
 
 ### 2. Kurikulum Modul (`/modules`)
 *   **File Entry**: [modules/page.tsx](file:///home/alpha/Documents/PKM/app/modules/page.tsx)

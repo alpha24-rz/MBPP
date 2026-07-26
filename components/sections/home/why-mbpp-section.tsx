@@ -70,8 +70,7 @@ const solutions = [
 ]
 
 /** Gallery-style corner brackets — the framing device used on the
- *  section's hero image, echoed by nothing else on the page so the
- *  photograph reads as a placed artifact, not a stock banner. */
+ *  section's hero image */
 function CornerMarks() {
   const corner = "absolute h-6 w-6 border-[#B08D57]"
   return (
@@ -84,7 +83,7 @@ function CornerMarks() {
   )
 }
 
-export function OwnDataSection() {
+export function WhyMbppSection() {
   return (
     <section id="why-mbpp" className="relative bg-[#F7F4EC] pb-28 scroll-mt-20">
       {/* Framed hero image */}
@@ -145,8 +144,7 @@ export function OwnDataSection() {
           </motion.p>
         </motion.div>
 
-        {/* Comparison ledger — one bordered artifact, split by a hairline,
-            instead of two competing colored cards */}
+        {/* Comparison ledger */}
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-[28px] border border-[#1E2A22]/10 bg-[#1E2A22]/10 md:grid-cols-2">
           {/* Column 1: Tantangan */}
           <motion.div
@@ -218,3 +216,5 @@ export function OwnDataSection() {
     </section>
   )
 }
+
+export const OwnDataSection = WhyMbppSection

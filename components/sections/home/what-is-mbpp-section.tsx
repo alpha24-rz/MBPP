@@ -1,6 +1,5 @@
 "use client"
 
-import { useRef } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 
 const fadeInUp = {
@@ -30,11 +29,6 @@ const pillars = [
     mark: "P",
     title: "Big Five Personality",
     body: "Memahami bagaimana karakteristik kepribadian unik Anda — seperti kecenderungan Neuroticism atau Openness — memengaruhi pola interaksi Anda dengan AI.",
-  },
-  {
-    mark: "L",
-    title: "Responsible AI Literacy",
-    body: "Membangun kecerdasan digital untuk memanfaatkan AI secara produktif sebagai asisten kolaboratif, tanpa kehilangan kemandirian berpikir kritis Anda.",
   },
 ]
 
@@ -76,7 +70,7 @@ function BreathingRings() {
   )
 }
 
-export function HomeSection() {
+export function WhatIsMbppSection() {
   return (
     <section
       id="what-is-mbpp"
@@ -115,7 +109,7 @@ export function HomeSection() {
           className="mb-16 max-w-2xl text-sm leading-relaxed text-[#1E2A22]/70 md:text-base"
         >
           MBPP adalah program psikoedukasi berbasis ilmiah yang dirancang khusus
-          untuk membantu Generasi Z membangun hubungan yang lebih sehat dan
+          untuk membantu Gen Z membangun hubungan yang lebih sehat dan
           berkesadaran dengan teknologi Kecerdasan Buatan (AI) — memadukan
           pendekatan kesadaran diri (Mindfulness) dengan kerangka psikologis
           Big Five Personality.
@@ -124,7 +118,7 @@ export function HomeSection() {
         {/* Core Pillars */}
         <motion.div
           variants={staggerContainer}
-          className="grid w-full grid-cols-1 gap-px overflow-hidden rounded-[28px] border border-[#1E2A22]/10 bg-[#1E2A22]/10 text-left md:grid-cols-3"
+          className="grid w-full grid-cols-1 gap-px overflow-hidden rounded-[28px] border border-[#1E2A22]/10 bg-[#1E2A22]/10 text-left md:grid-cols-2"
         >
           {pillars.map((p) => (
             <motion.div
@@ -146,7 +140,7 @@ export function HomeSection() {
           ))}
         </motion.div>
 
-        {/* Mission statement — treated as a certification line, not a badge */}
+        {/* Mission statement */}
         <motion.div
           variants={fadeInUp}
           className="mt-16 border-y border-[#B08D57]/30 px-6 py-4"
@@ -162,3 +156,6 @@ export function HomeSection() {
     </section>
   )
 }
+
+// Alias for backwards compatibility if referenced
+export const HomeSection = WhatIsMbppSection
