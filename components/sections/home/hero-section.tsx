@@ -1,7 +1,13 @@
 "use client"
 
-import { Sparkles, Layers, Palette, Pen } from "lucide-react"
+import dynamic from "next/dynamic"
+import { Sparkles, Layers, Palette } from "lucide-react"
 import { motion } from "framer-motion"
+
+const CopilotCharacter = dynamic(
+  () => import("@/components/ui/copilot-character").then((mod) => mod.CopilotCharacter),
+  { ssr: false }
+)
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,7 +38,8 @@ export function HeroSection() {
     <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden bg-white">
       {/* Blob ungu blur besar di atas, meleleh ke putih */}
       <motion.div
-
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 1.5 }}
         className="absolute left-1/2 top-0 -translate-x-1/2"
         style={{
@@ -82,24 +89,33 @@ export function HeroSection() {
         subtitle="Kenali kepribadianmu"
       />
 
-      {/* Kanan atas — kecil, rotasi kuat */}
+      {/* Kanan atas — Karakter 3D Copilot */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 60,
+          damping: 10,
+          delay: 0.6,
+        }}
+        className="absolute right-[-2%] md:right-[0%] lg:right-[-4%] top-[12%] md:top-[15%] lg:top-[15%] hidden md:flex flex-col items-center justify-center z-20 pointer-events-auto"
+      >
+        <div className="relative w-[380px] h-[380px] md:w-[480px] md:h-[480px] lg:w-[580px] lg:h-[580px] xl:w-[400px] xl:h-[400px]">
+          {/* Ambient glow behind character */}
+          <div className="absolute inset-0 -z-10 rounded-full bg-[#7c4fd4]/30 blur-3xl" />
+          <CopilotCharacter className="h-full w-full" />
+        </div>
+      </motion.div>
+
+      {/* Kanan bawah — Floating card Self Reflection */}
       <FloatingCard
-        className="right-[7%] top-[60%] hidden lg:flex"
-        rotate={10}
-        delay={0.6}
+        className="right-[8%] top-[78%] hidden lg:flex"
+        rotate={-10}
+        delay={1.2}
         icon={<Palette className="h-5 w-5 text-[#7c4fd4]" />}
         title="Self Reflection"
         subtitle="Latihan mindfulness"
-      />
-
-      {/* Kanan bawah — sedang, rotasi negatif ringan */}
-      <FloatingCard
-        className="right-[6%] top-[80%] hidden md:flex"
-        rotate={-5}
-        delay={1.8}
-        icon={<Pen className="h-5 w-5 text-[#7c4fd4]" />}
-        title="Journaling"
-        subtitle="Tulis emosimu"
       />
 
       {/* ===== Hero content ===== */}
