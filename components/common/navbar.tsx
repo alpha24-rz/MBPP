@@ -24,32 +24,30 @@ import {
 import { cn } from "@/lib/utils"
 
 const homeSubItems = [
-  { label: "What is MBPP?", href: "/#what-is-mbpp" },
-  { label: "Why MBPP?", href: "/#why-mbpp" },
-  { label: "How the Programme Works", href: "/#how-it-works" },
-  { label: "Featured Modules", href: "/#featured-modules" },
-  { label: "Research Highlights", href: "/#research-highlights" },
-  { label: "Call to Action", href: "/#cta" },
+  { label: "Apa itu MBPP?", href: "/#what-is-mbpp" },
+  { label: "Mengapa MBPP?", href: "/#why-mbpp" },
+  { label: "Cara Kerja Program", href: "/#how-it-works" },
+  { label: "Modul Unggulan", href: "/#featured-modules" },
+  { label: "Sorotan Penelitian", href: "/#research-highlights" },
+  { label: "Mari Bergabung", href: "/#cta" },
 ]
 
 const aboutSubItems = [
-  { label: "About MBPP", href: "/about#about-mbpp" },
-  { label: "Research Background", href: "/about#science-behind" },
-  { label: "Research Objectives", href: "/about#science-behind" },
-  { label: "Research Methodology", href: "/about#science-behind" },
-  { label: "About This Platform", href: "/about#science-behind" },
-  { label: "Research Information", href: "/about#research-info" },
-  { label: "Research Team", href: "/about#team" },
-  { label: "Contact", href: "/about#contact" },
+  { label: "Tentang MBPP", href: "/about#about-mbpp" },
+  { label: "Latar Belakang Penelitian", href: "/about#science-behind" },
+  { label: "Tujuan Penelitian", href: "/about#science-behind" },
+  { label: "Metodologi Penelitian", href: "/about#science-behind" },
+  { label: "Tentang Platform Ini", href: "/about#science-behind" },
+  { label: "Informasi Penelitian", href: "/about#research-info" },
+  { label: "Tim Peneliti", href: "/about#team" },
+  { label: "Kontak", href: "/about#contact" },
 ]
 
-
-
 const resourceItems = [
-  { label: "All Resources", href: "/resources" },
-  { label: "Articles", href: "/resources" },
-  { label: "Research Papers", href: "/resources" },
-  { label: "Downloads", href: "/resources" },
+  { label: "Semua Pustaka", href: "/resources" },
+  { label: "Artikel", href: "/resources" },
+  { label: "Jurnal & Makalah", href: "/resources" },
+  { label: "Unduhan", href: "/resources" },
 ]
 
 export function Navbar() {
@@ -126,7 +124,7 @@ export function Navbar() {
                       : "text-white/80 hover:text-white hover:bg-white/10 data-[state=open]:bg-white/10 data-[state=open]:text-white"
                   )}
                 >
-                  Home
+                  Beranda
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-52 p-2">
@@ -158,7 +156,7 @@ export function Navbar() {
                       : "text-white/80 hover:text-white hover:bg-white/10 data-[state=open]:bg-white/10 data-[state=open]:text-white"
                   )}
                 >
-                  About the Project
+                  Tentang Penelitian
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-56 p-2">
@@ -191,7 +189,7 @@ export function Navbar() {
                         : "text-white/80 hover:text-white hover:bg-white/10"
                     )}
                   >
-                    Modules
+                    Modul
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -207,7 +205,7 @@ export function Navbar() {
                       : "text-white/80 hover:text-white hover:bg-white/10 data-[state=open]:bg-white/10 data-[state=open]:text-white"
                   )}
                 >
-                  Resources
+                  Pustaka
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-48 p-2">
@@ -252,7 +250,7 @@ export function Navbar() {
                     <DropdownMenuItem asChild>
                       <Link href="/admin" className="cursor-pointer rounded-lg flex items-center font-semibold text-primary">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Admin Console
+                        Konsol Admin
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -261,7 +259,7 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="cursor-pointer rounded-lg flex items-center">
                     <User className="mr-2 h-4 w-4" />
-                    Profile
+                    Profil
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -273,7 +271,7 @@ export function Navbar() {
                   className="cursor-pointer text-destructive focus:text-destructive rounded-lg flex items-center"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+                  Keluar
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -288,13 +286,13 @@ export function Navbar() {
                     : "text-white/80 hover:text-white"
                 )}
               >
-                Login
+                Masuk
               </Link>
               <Link
                 href="/register"
                 className="px-4 py-1.5 text-sm font-semibold text-white rounded-xl bg-primary/80 hover:bg-primary border border-white/20 hover:border-white/40 shadow-md shadow-primary/20 transition-all duration-200 hover:scale-105"
               >
-                Sign up
+                Daftar
               </Link>
             </div>
           )}
@@ -331,7 +329,7 @@ export function Navbar() {
                 isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
               )}
             >
-              Home
+              Beranda
             </Link>
 
             {/* Mobile About the Project */}
@@ -343,7 +341,7 @@ export function Navbar() {
                 isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
               )}
             >
-              About the Project
+              Tentang Penelitian
             </Link>
 
             {/* Mobile Modules */}
@@ -355,7 +353,7 @@ export function Navbar() {
                 isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
               )}
             >
-              Modules
+              Modul
             </Link>
 
             {/* Mobile Resources */}
@@ -367,7 +365,7 @@ export function Navbar() {
                 isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
               )}
             >
-              Resources
+              Pustaka
             </Link>
 
             {/* Mobile Auth */}
@@ -391,7 +389,7 @@ export function Navbar() {
                       className="flex items-center gap-2 py-2 px-3 rounded-xl text-sm font-semibold text-[#7c4fd4] hover:text-[#5e35b8] hover:bg-gray-100 transition-colors"
                     >
                       <LayoutDashboard className="h-4 w-4" />
-                      Admin Console
+                      Konsol Admin
                     </Link>
                   )}
                   <Link
@@ -403,7 +401,7 @@ export function Navbar() {
                     )}
                   >
                     <User className="h-4 w-4" />
-                    Profile
+                    Profil
                   </Link>
                   <button
                     onClick={async () => {
@@ -417,7 +415,7 @@ export function Navbar() {
                     )}
                   >
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    Keluar
                   </button>
                 </div>
               ) : (
@@ -430,14 +428,14 @@ export function Navbar() {
                       isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
                     )}
                   >
-                    Login
+                    Masuk
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex-1 py-2 text-center text-sm font-semibold text-white rounded-xl bg-primary hover:bg-primary/90 transition-all duration-200"
                   >
-                    Sign up
+                    Daftar
                   </Link>
                 </div>
               )}

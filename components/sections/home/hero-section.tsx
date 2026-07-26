@@ -99,9 +99,9 @@ export function HeroSection() {
           damping: 10,
           delay: 0.6,
         }}
-        className="absolute right-[-2%] md:right-[0%] lg:right-[-4%] top-[12%] md:top-[15%] lg:top-[15%] hidden md:flex flex-col items-center justify-center z-20 pointer-events-auto"
+        className="absolute right-[-10%] md:right-[-9%] lg:right-[-10%] xl:right-[-11%] top-[10%] md:top-[12%] lg:top-[10%] hidden md:flex flex-col items-center justify-center z-20 pointer-events-auto"
       >
-        <div className="relative w-[380px] h-[380px] md:w-[480px] md:h-[480px] lg:w-[580px] lg:h-[580px] xl:w-[400px] xl:h-[400px]">
+        <div className="relative w-[360px] h-[360px] md:w-[420px] md:h-[420px] lg:w-[480px] lg:h-[480px] xl:w-[540px] xl:h-[540px]">
           {/* Ambient glow behind character */}
           <div className="absolute inset-0 -z-10 rounded-full bg-[#7c4fd4]/30 blur-3xl" />
           <CopilotCharacter className="h-full w-full" />
