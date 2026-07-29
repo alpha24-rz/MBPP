@@ -24,7 +24,11 @@ interface PertemuanModalProps {
   setPertemuanForm: React.Dispatch<React.SetStateAction<any>>
   modules: any[]
   onSave: (e: React.FormEvent) => void
-  handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => void
+  handleImageUpload: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (url: string) => void,
+    bucketName?: string
+  ) => void
 }
 
 export function PertemuanModal({
@@ -49,7 +53,7 @@ export function PertemuanModal({
 
     setUploading(true)
     try {
-      await handleImageUpload(e, (url) => setPertemuanForm((prev: any) => ({ ...prev, image_url: url })))
+      await handleImageUpload(e, (url) => setPertemuanForm((prev: any) => ({ ...prev, image_url: url })), "pertemuan-images")
     } catch (err: any) {
       setUploadError(err?.message || "Gagal mengupload gambar.")
     } finally {

@@ -188,13 +188,14 @@ export default function AdminConsolePage() {
 
     let allowedTypes = ["image/*", "audio/*", "video/*"]
     let maxSizeMB = 25
-    if (bucketName.includes("image")) {
+
+    if (file.type.startsWith("image/")) {
       allowedTypes = ["image/*"]
       maxSizeMB = 5
-    } else if (bucketName.includes("audio")) {
+    } else if (file.type.startsWith("audio/")) {
       allowedTypes = ["audio/*"]
       maxSizeMB = 25
-    } else if (bucketName.includes("video")) {
+    } else if (file.type.startsWith("video/")) {
       allowedTypes = ["video/*"]
       maxSizeMB = 50
     }

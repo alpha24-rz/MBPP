@@ -381,7 +381,7 @@ export function SesiModal({
                 type="file"
                 accept="image/*"
                 disabled={uploadingKey !== null}
-                onChange={(e) => handleMediaUpload(e, "image", (url) => setSesiForm((prev: any) => ({ ...prev, image_url: url })), "session-images")}
+                onChange={(e) => handleMediaUpload(e, "image", (url) => setSesiForm((prev: any) => ({ ...prev, image_url: url })), "session-media")}
                 className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer disabled:opacity-50"
               />
 
@@ -726,7 +726,7 @@ export function SesiModal({
                 type="file"
                 accept="audio/*"
                 disabled={uploadingKey !== null}
-                onChange={(e) => handleMediaUpload(e, "audio", (url) => setSesiForm((prev: any) => ({ ...prev, audio_url: url })), "session-audio")}
+                onChange={(e) => handleMediaUpload(e, "audio", (url) => setSesiForm((prev: any) => ({ ...prev, audio_url: url })), "session-media")}
                 className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer disabled:opacity-50"
               />
 
@@ -784,7 +784,7 @@ export function SesiModal({
                 type="file"
                 accept="video/*"
                 disabled={uploadingKey !== null}
-                onChange={(e) => handleMediaUpload(e, "video", (url) => setSesiForm((prev: any) => ({ ...prev, video_url: url })), "session-video")}
+                onChange={(e) => handleMediaUpload(e, "video", (url) => setSesiForm((prev: any) => ({ ...prev, video_url: url })), "session-media")}
                 className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 cursor-pointer disabled:opacity-50"
               />
 

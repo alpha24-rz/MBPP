@@ -20,7 +20,11 @@ interface ModuleModalProps {
   }
   setModuleForm: React.Dispatch<React.SetStateAction<any>>
   onSave: (e: React.FormEvent) => void
-  handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => void
+  handleImageUpload: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (url: string) => void,
+    bucketName?: string
+  ) => void
 }
 
 export function ModuleModal({
@@ -44,7 +48,7 @@ export function ModuleModal({
 
     setUploading(true)
     try {
-      await handleImageUpload(e, (url) => setModuleForm((prev: any) => ({ ...prev, image_url: url })))
+      await handleImageUpload(e, (url) => setModuleForm((prev: any) => ({ ...prev, image_url: url })), "module-images")
     } catch (err: any) {
       setUploadError(err?.message || "Gagal mengupload gambar.")
     } finally {
