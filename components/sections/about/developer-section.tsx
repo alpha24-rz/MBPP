@@ -1,38 +1,38 @@
 "use client"
 
 import { useState } from "react"
-import { motion , type Variants } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 
 const team = [
   {
     name: "Muhammad Rafli Hidayatullah Arif",
     nickname: "Rafli",
     role: "Fakultas Psikologi, UNM",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop",
+    img: "/anggota/rafli.webp",
   },
   {
     name: "Riswandi",
     nickname: "Wandi",
     role: "Fakultas Psikologi, UNM",
-    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop",
+    img: "/anggota/wan.webp",
   },
   {
     name: "Andi Fadli Hidayat Risandi Kresna",
     nickname: "Fadli",
     role: "Fakultas Psikologi, UNM",
-    img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop",
+    img: "/anggota/fadli.webp",
   },
   {
     name: "Rahmaddika Alwadi",
     nickname: "Alwa",
     role: "Fakultas Psikologi, UNM",
-    img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop",
+    img: "/anggota/alwa.webp",
   },
   {
     name: "Muhammad Alfarizi",
     nickname: "Alfarizi",
     role: "Teknik Informatika dan Komputer, UNM",
-    img: "alfa.png",
+    img: "/anggota/alfa.webp",
   },
 ]
 
