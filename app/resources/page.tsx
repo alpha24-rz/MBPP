@@ -7,68 +7,6 @@ import { Footer } from "@/components/common/footer"
 import { FileText, Download, BookOpen, ExternalLink, Calendar } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
-const resources = {
-  articles: [
-    {
-      title: "Mengenal AI Intimacy pada Gen Z: Dampak & Solusi",
-      desc: "Menelaah fenomena keterikatan emosional semu remaja terhadap asisten kecerdasan buatan dan bagaimana mengatasinya.",
-      date: "15 Juli 2026",
-      readTime: "6 Menit",
-      category: "Artikel Edukasi",
-    },
-    {
-      title: "Pentingnya Mindfulness di Era Generative AI",
-      desc: "Melatih jeda sadar (mindful pause) sebagai jangkar kognitif saat menggunakan alat generative AI harian.",
-      date: "08 Juni 2026",
-      readTime: "8 Menit",
-      category: "Mindfulness",
-    },
-    {
-      title: "Kedaulatan Berpikir: Mengapa AI Bukan Pengganti Otak Anda",
-      desc: "Cara produktif memanfaatkan output AI sebagai rekan kolaborasi tanpa mendelagasikan kemandirian logika kritis.",
-      date: "24 Mei 2026",
-      readTime: "5 Menit",
-      category: "Literasi Digital",
-    },
-  ],
-  papers: [
-    {
-      title: "Formulating MBPP: An Interdisciplinary Intervention for Cognitive Agency",
-      journal: "Journal of Cyberpsychology & Digital Wellness",
-      authors: "Arif, M. R. H., Riswandi, Kresna, A. F. R., Alwadi, R.",
-      year: "2026",
-      doi: "10.1016/j.chb.2026.108422",
-    },
-    {
-      title: "Big Five Personality Dimensions and AI Intimacy Among Gen Z Students",
-      journal: "Frontiers in Psychology (Clinical Section)",
-      authors: "Riswandi, Arif, M. R. H., Alwadi, R.",
-      year: "2025",
-      doi: "10.3389/fpsyg.2025.992812",
-    },
-  ],
-  downloads: [
-    {
-      name: "MBPP Daily Reflection Workbook.pdf",
-      size: "4.2 MB",
-      type: "Workbook Jurnal Terbimbing",
-      downloads: "1,240 Kali",
-    },
-    {
-      name: "Big Five Personality Digital Assessment Sheet.pdf",
-      size: "1.8 MB",
-      type: "Panduan Penilaian Mandiri",
-      downloads: "850 Kali",
-    },
-    {
-      name: "Mindful AI Checklist & Guidelines.pdf",
-      size: "950 KB",
-      type: "Lembar Panduan Praktis",
-      downloads: "2,110 Kali",
-    },
-  ],
-}
-
 const fadeInUp = {
   hidden: { opacity: 0, y: 15 },
   visible: {
@@ -103,7 +41,7 @@ export default function ResourcesPage() {
     async function fetchAllResources() {
       setLoading(true)
       try {
-        // Fetch Articles
+        // Fetch Articles from Supabase
         const { data: artData } = await supabase
           .from("articles")
           .select("*")
@@ -118,14 +56,14 @@ export default function ResourcesPage() {
               month: "long",
               year: "numeric"
             }),
-            readTime: item.read_time,
-            category: item.category
+            readTime: item.read_time || "5 Menit",
+            category: item.category || "Artikel Edukasi"
           })))
         } else {
-          setArticles(resources.articles)
+          setArticles([])
         }
 
-        // Fetch Papers
+        // Fetch Papers from Supabase
         const { data: paperData } = await supabase
           .from("research_papers")
           .select("*")
@@ -134,10 +72,10 @@ export default function ResourcesPage() {
         if (paperData && paperData.length > 0) {
           setPapers(paperData)
         } else {
-          setPapers(resources.papers)
+          setPapers([])
         }
 
-        // Fetch Downloads
+        // Fetch Downloads from Supabase
         const { data: dlData } = await supabase
           .from("downloads")
           .select("*")
@@ -146,13 +84,13 @@ export default function ResourcesPage() {
         if (dlData && dlData.length > 0) {
           setDownloads(dlData)
         } else {
-          setDownloads(resources.downloads)
+          setDownloads([])
         }
       } catch (e) {
-        console.error("Gagal mengambil data dari Supabase, menggunakan fallback:", e)
-        setArticles(resources.articles)
-        setPapers(resources.papers)
-        setDownloads(resources.downloads)
+        console.error("Gagal mengambil data sumber daya dari Supabase:", e)
+        setArticles([])
+        setPapers([])
+        setDownloads([])
       } finally {
         setLoading(false)
       }
@@ -244,7 +182,7 @@ export default function ResourcesPage() {
               {activeTab === "articles" && (
                 <div className="space-y-6">
                   {loading ? (
-                    <div className="text-center py-10 text-xs text-[#2a1845]/50 animate-pulse">Memuat artikel dari database...</div>
+                    <div className="text-center py-10 text-xs text-[#2a1845]/70 font-semibold animate-pulse">Menyiapkan sumber daya edukasi MBPP...</div>
                   ) : articles.length === 0 ? (
                     <div className="text-center py-10 text-xs text-muted-foreground">Tidak ada artikel.</div>
                   ) : (

@@ -41,31 +41,31 @@ const containerVariants = {
 
 const challenges = [
   {
-    title: "Ketergantungan Kognitif",
-    desc: "Kecenderungan menyerahkan seluruh keputusan dan proses berpikir kreatif kepada AI, sehingga menurunkan ketajaman logika berpikir kritis.",
+    title: "Ketergantungan Curhat pada AI (AI Intimacy)",
+    desc: "Kecenderungan spontan Generasi Z menjadikan chatbot AI sebagai sarana utama mencurahkan isi hati dan validasi emosional saat menghadapi distres emosional.",
   },
   {
-    title: "Ilusi Hubungan Emosional (AI Intimacy)",
-    desc: "Terjebak dalam kedekatan semu (parasocial) dengan chatbot AI, yang berisiko mengurangi kualitas interaksi sosial di dunia nyata.",
+    title: "Kebiasaan Automatic Pilot",
+    desc: "Tindakan refleks membuka aplikasi AI saat mengalami tekanan atau kesepian tanpa sempat menyadari dan mengolah emosi internal yang sebenarnya.",
   },
   {
-    title: "Kecemasan & Kelelahan Informasi",
-    desc: "Banjir output AI yang instan memicu kebiasaan serba cepat, menurunkan rentang perhatian (attention span), dan memicu burnout.",
+    title: "Kerentanan Berbasis Tipe Kepribadian",
+    desc: "Tingkat Neuroticism tinggi atau Extraversion rendah dapat meningkatkan keterikatan emosional parasit terhadap agen percakapan AI.",
   },
 ]
 
 const solutions = [
   {
-    title: "Kedaulatan Berpikir (Cognitive Agency)",
-    desc: "Mengembalikan posisi Anda sebagai pengendali utama. AI digunakan sebagai alat bantu, sementara kreativitas dan keputusan tetap milik Anda.",
+    title: "Mindfulness & Jeda Sadar",
+    desc: "Melatih pernapasan sadar, pemindaian tubuh, mindful eating, dan mindful listening untuk keluar dari kebiasaan automatic pilot.",
   },
   {
-    title: "Regulasi Emosi & Interaksi Sadar",
-    desc: "Latihan jeda sadar (mindful pause) untuk mengamati reaksi emosional Anda saat menggunakan teknologi dan menjaga batasan sehat.",
+    title: "Prudence: 'Berhenti, Pikirkan, Bertindak'",
+    desc: "Penguatan kekuatan karakter kehati-hatian untuk menimbang keputusan secara matang sebelum beraksi atau curhat spontan ke AI.",
   },
   {
-    title: "Efikasi Diri yang Disesuaikan",
-    desc: "Pendekatan berbasis Big Five Personality membantu Anda memahami kelemahan serta kekuatan psikologis pribadi Anda dalam merespons AI.",
+    title: "Dukungan Emosional Internal (Self-Compassion & Gratitude)",
+    desc: "Membangun rasa welas asih pada diri sendiri dan kebiasaan bersyukur sebagai alternatif regulasi emosi yang sehat dan mandiri.",
   },
 ]
 

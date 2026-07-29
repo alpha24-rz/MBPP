@@ -5,24 +5,9 @@ import { Navbar } from "@/components/common/navbar"
 import { Footer } from "@/components/common/footer"
 import Image from "next/image"
 import Link from "next/link"
-import { Clock, BookOpen, ChevronRight, Sparkles } from "lucide-react"
+import { BookOpen, ChevronRight, Sparkles, Loader2, Calendar } from "lucide-react"
 import { motion } from "framer-motion"
 import { supabase } from "@/lib/supabaseClient"
-
-const modules = [
-  {
-    id: 1,
-    number: "Module 01",
-    image: "/images/module-01.png",
-    badge: "Foundational Intervention",
-    badgeColor: "bg-violet-100 text-violet-700 border border-violet-200/50",
-    title: "Mengenal Diri di Era AI",
-    subtitle: "AI Awareness & Self-Discovery",
-    desc: "Membangun landasan kesadaran diri sebagai titik awal perjalanan intervensi. Modul ini membimbing peserta untuk mengeksplorasi bagaimana profil kepribadian unik mereka — berdasarkan kerangka psikologis Big Five Personality — memengaruhi kecenderungan, motivasi, dan pola interaksi mereka dengan teknologi Artificial Intelligence (AI) sehari-hari.",
-    duration: "90 Menit",
-    sessions: "1 Sesi",
-  }
-]
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -48,27 +33,42 @@ const staggerContainer = {
 }
 
 export default function ModulesPage() {
-  const [interventions, setInterventions] = useState<any[]>([])
+  const [modulesList, setModulesList] = useState<any[]>([])
+  const [pertemuanList, setPertemuanList] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchInterventions() {
+    async function fetchData() {
       try {
-        const { data, error } = await supabase
-          .from("interventions")
+        // Fetch Modules from Supabase Database
+        const { data: modData, error: modErr } = await supabase
+          .from("modules")
           .select("*")
-          .order("created_at", { ascending: true })
-        if (!error && data) {
-          setInterventions(data)
+          .order("order_index", { ascending: true })
+
+        if (!modErr && modData) {
+          setModulesList(modData)
+        }
+
+        // Fetch Pertemuan from Supabase Database
+        const { data: pData, error: pErr } = await supabase
+          .from("pertemuan")
+          .select("*")
+          .order("order_index", { ascending: true })
+
+        if (!pErr && pData) {
+          setPertemuanList(pData)
         }
       } catch (e) {
-        console.error("Gagal mengambil data intervensi, menggunakan fallback kosong:", e)
+        console.error("Gagal mengambil data modul dari Supabase:", e)
       } finally {
         setLoading(false)
       }
     }
-    fetchInterventions()
+
+    fetchData()
   }, [])
+
   return (
     <main className="min-h-screen bg-[#FBF6ED] overflow-hidden">
       <Navbar />
@@ -113,108 +113,121 @@ export default function ModulesPage() {
               Program Curriculums
             </motion.p>
             <motion.h2 variants={fadeInUp} className="font-serif text-3xl font-bold text-[#2a1845] md:text-4xl">
-              Kurikulum Modul MBPP
+              Kurikulum Modul Utama MBPP
             </motion.h2>
             <motion.p variants={fadeInUp} className="mt-3 max-w-2xl mx-auto text-sm text-foreground/75 leading-relaxed">
-              Program ini terdiri dari 5 modul psikoedukasi berkesinambungan yang memandu Anda secara bertahap menuju kesadaran digital penuh.
+              Program ini terdiri dari modul psikoedukasi berkesinambungan yang memandu Anda secara bertahap menuju kesadaran digital penuh.
             </motion.p>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-            className="space-y-12"
-          >
-            {modules.map((mod) => (
-              <motion.div
-                variants={fadeInUp}
-                whileHover={{ y: -6, boxShadow: "0 10px 30px -15px rgba(42, 24, 69, 0.15)" }}
-                key={mod.id}
-                className="flex flex-col lg:flex-row items-center gap-8 p-6 rounded-3xl border border-[#e8e0f7] bg-white transition-all duration-300"
-              >
-                {/* Visual Image */}
-                <div className="relative w-full lg:w-[280px] shrink-0 aspect-[4/3] rounded-2xl overflow-hidden shadow-md group">
-                  <Image
-                    src={mod.image}
-                    alt={mod.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute top-3 left-3 z-10">
-                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold backdrop-blur-md shadow-sm ${mod.badgeColor}`}>
-                      <Sparkles className="mr-1 h-3 w-3" />
-                      {mod.badge}
-                    </span>
-                  </div>
-                </div>
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-3">
+              <Loader2 className="h-8 w-8 text-[#7c4fd4] animate-spin" />
+              <p className="text-sm font-semibold text-[#2a1845]/70">Menyiapkan kurikulum pembelajaran MBPP...</p>
+            </div>
+          ) : modulesList.length === 0 ? (
+            <div className="text-center py-16 bg-[#FAF8F5] rounded-3xl border border-purple-100 p-8 max-w-xl mx-auto shadow-xs">
+              <div className="w-12 h-12 rounded-2xl bg-purple-100 text-[#7c4fd4] flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-serif font-bold text-[#2a1845]">Kurikulum Pembelajaran Sedang Disiapkan</h3>
+              <p className="text-xs text-foreground/70 mt-2 max-w-md mx-auto leading-relaxed">
+                Materi modul dan intervensi psikoedukasi sedang disiapkan oleh tim peneliti. Silakan kembali lagi beberapa saat lagi.
+              </p>
+            </div>
+          ) : (
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={staggerContainer}
+              className="space-y-12"
+            >
+              {modulesList.map((mod, idx) => {
+                // Filter pertemuan associated with this module
+                const modPertemuan = pertemuanList.filter(
+                  (item) => Number(item.module_id) === Number(mod.id)
+                )
 
-                {/* Content */}
-                <div className="flex-1 flex flex-col">
-                  <span className="text-[10px] font-bold tracking-widest text-[#7c4fd4] uppercase mb-1">
-                    {mod.number}
-                  </span>
-                  <h3 className="text-xl font-bold text-[#2a1845] leading-tight mb-1">
-                    {mod.title}
-                  </h3>
-                  <p className="text-xs font-semibold italic text-[#7c4fd4]/80 mb-4">
-                    {mod.subtitle}
-                  </p>
-                  <p className="text-sm text-foreground/80 leading-relaxed mb-6">
-                    {mod.desc}
-                  </p>
+                return (
+                  <motion.div
+                    variants={fadeInUp}
+                    whileHover={{ y: -6, boxShadow: "0 10px 30px -15px rgba(42, 24, 69, 0.15)" }}
+                    key={mod.id}
+                    className="flex flex-col lg:flex-row items-center gap-8 p-6 rounded-3xl border border-[#e8e0f7] bg-white transition-all duration-300 shadow-sm"
+                  >
+                    {/* Visual Image */}
+                    <div className="relative w-full lg:w-[280px] shrink-0 aspect-[4/3] rounded-2xl overflow-hidden shadow-md group bg-purple-50">
+                      <Image
+                        src={mod.image_url || "/images/module-01.png"}
+                        alt={mod.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold backdrop-blur-md shadow-sm ${mod.badge_color || "bg-violet-100 text-violet-700"}`}>
+                          <Sparkles className="mr-1 h-3 w-3" />
+                          {mod.badge || "Modul MBPP"}
+                        </span>
+                      </div>
+                    </div>
 
-                  {mod.id === 1 && (
-                    <div className="mb-6 p-5 rounded-2xl bg-[#FBF6ED]/40 border border-purple-100/50">
-                      <h4 className="text-xs font-bold text-[#2a1845] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                        <Sparkles className="h-3.5 w-3.5 text-[#7c4fd4]" />
-                        Sesi Intervensi Terintegrasi
-                      </h4>
-                      {loading ? (
-                        <p className="text-xs text-muted-foreground animate-pulse">Memuat intervensi dari database...</p>
-                      ) : interventions.length === 0 ? (
-                        <p className="text-xs text-muted-foreground italic">Belum ada sesi intervensi yang ditambahkan oleh peneliti.</p>
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {interventions.map((item, idx) => (
-                            <div key={item.id} className="p-3 rounded-xl border border-purple-50 bg-white shadow-sm hover:shadow transition-shadow">
-                              <h5 className="text-xs font-bold text-[#2a1845]">{idx + 1}. {item.title}</h5>
-                              <p className="text-[11px] text-[#2a1845]/70 leading-relaxed mt-1">{item.desc_text}</p>
-                            </div>
-                          ))}
+                    {/* Content */}
+                    <div className="flex-1 flex flex-col w-full">
+                      <h3 className="text-2xl font-serif font-bold text-[#2a1845] leading-tight mb-1">
+                        {mod.title}
+                      </h3>
+                      <p className="text-xs font-semibold italic text-[#7c4fd4]/80 mb-4">
+                        {mod.subtitle}
+                      </p>
+                      <p className="text-sm text-foreground/80 leading-relaxed mb-6">
+                        {mod.desc_text}
+                      </p>
+
+                      {/* Integrated Pertemuan List from DB */}
+                      {modPertemuan.length > 0 && (
+                        <div className="mb-6 p-4 rounded-2xl bg-[#FBF6ED]/50 border border-purple-100/60">
+                          <h4 className="text-xs font-bold text-[#2a1845] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5 text-[#7c4fd4]" />
+                            Pertemuan Terintegrasi Dalam Modul Ini ({modPertemuan.length})
+                          </h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            {modPertemuan.map((item, idx) => (
+                              <div key={item.id} className="p-2.5 rounded-xl border border-purple-50 bg-white shadow-xs hover:shadow-sm transition-shadow">
+                                <span className="text-[9px] font-bold text-[#7c4fd4]">{item.pertemuan_number || `Pertemuan 0${idx + 1}`}</span>
+                                <h5 className="text-xs font-bold text-[#2a1845] line-clamp-1">{item.title}</h5>
+                                <p className="text-[11px] text-[#2a1845]/70 leading-relaxed mt-0.5 line-clamp-1">{item.subtitle}</p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
-                    </div>
-                  )}
 
-                  <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border mt-auto">
-                    <div className="flex items-center gap-4 text-xs font-semibold text-[#7c4fd4]">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {mod.duration}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="h-4 w-4" />
-                        {mod.sessions}
-                      </span>
-                    </div>
+                      <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border mt-auto">
+                        <div className="flex items-center gap-4 text-xs font-semibold text-[#7c4fd4]">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {modPertemuan.length} Pertemuan
+                          </span>
+                        </div>
 
-                    <Link href={`/modules/${mod.id}`}>
-                      <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="flex items-center gap-1 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] px-4 py-2 text-xs font-semibold text-white shadow transition-all duration-200 cursor-pointer"
-                      >
-                        Buka Modul
-                        <ChevronRight className="h-3.5 w-3.5" />
-                      </motion.button>
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                        <Link href={`/modules/${mod.id}`}>
+                          <motion.button
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            className="flex items-center gap-1 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] px-4 py-2 text-xs font-semibold text-white shadow transition-all duration-200 cursor-pointer"
+                          >
+                            Buka Modul & Daftar Pertemuan
+                            <ChevronRight className="h-3.5 w-3.5" />
+                          </motion.button>
+                        </Link>
+                      </div>
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </motion.div>
+          )}
         </div>
       </section>
 

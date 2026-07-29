@@ -1,9 +1,9 @@
 # Dokumentasi & Ringkasan Website MBPP (Mindfulness-Based Psychoeducation Programme)
 
 ## 📌 Deskripsi Umum
-Website ini adalah platform edukasi berbasis penelitian ilmiah yang dirancang khusus untuk membantu **Generasi Z membangun hubungan yang lebih sehat dan berkesadaran dengan teknologi Kecerdasan Buatan (AI)**. 
+Website ini adalah platform edukasi berbasis penelitian ilmiah yang dirancang khusus untuk membantu **Generasi Z menurunkan tingkat ketergantungan curhat (bercerita) pada Artificial Intelligence (AI)** dan mengembalikan kedaulatan kognitif (*cognitive agency*).
 
-Program ini mengintegrasikan pendekatan **Mindfulness** (kesadaran diri) dengan kerangka psikologis **Big Five Personality** untuk melatih kedaulatan kognitif (*cognitive agency*) dan memitigasi ketergantungan emosional yang berlebihan terhadap AI (*AI intimacy*).
+Program intervensi ini memadukan pendekatan **Mindfulness** (kesadaran penuh) dengan kerangka psikologis **Big Five Personality** serta penguatan kekuatan karakter (*character strengths*: Ketekunan, Kehati-hatian, Welas Asih, Rasa Syukur, Keterbukaan Pembelajaran) yang divalidasi menggunakan instrumen **CAIDS-20** dan **IPIP-BFM-50**.
 
 ---
 
@@ -13,9 +13,10 @@ Berikut adalah tantangan yang dihadapi Generasi Z beserta solusi yang ditawarkan
 
 | ⚠️ Tantangan Digital Saat Ini | ✨ Solusi Melalui MBPP |
 | :--- | :--- |
-| **Ketergantungan Kognitif**:<br>Kecenderungan menyerahkan seluruh keputusan dan proses berpikir kreatif kepada AI, menurunkan ketajaman logika kritis. | **Kedaulatan Berpikir (Cognitive Agency)**:<br>Mengembalikan kendali penuh kepada pengguna. AI digunakan sebagai asisten kolaboratif, sementara kreativitas dan keputusan tetap di tangan manusia. |
-| **Ilusi Hubungan Emosional (AI Intimacy)**:<br>Terjebak dalam kedekatan semu (parasocial) dengan chatbot AI, yang berisiko mengurangi kualitas interaksi sosial di dunia nyata. | **Regulasi Emosi & Interaksi Sadar**:<br>Melatih jeda sadar (*mindful pause*) untuk mengamati reaksi emosional saat menggunakan teknologi dan menjaga batasan sehat. |
-| **Kecemasan & Kelelahan Informasi**:<br>Banjir output AI instan memicu kebiasaan serba cepat, menurunkan rentang perhatian (*attention span*), dan memicu *burnout*. | **Efikasi Diri yang Disesuaikan**:<br>Menggunakan kerangka *Big Five Personality* untuk memahami kekuatan dan kelemahan psikologis unik masing-masing individu dalam merespons AI. |
+| **Ketergantungan Curhat pada AI (AI Intimacy)**:<br>Kecenderungan spontan menjadikan chatbot AI sebagai sarana utama pelarian emosional saat tertekan tanpa jeda sadar. | **Regulasi Emosi & Jeda Sadar**:<br>Melatih latihan pernapasan penuh kesadaran (*mindful breathing*) dan jeda *"Berhenti, Pikirkan, Bertindak"* sebelum berinteraksi dengan AI. |
+| **Automatic Pilot (Pilot Otomatis)**:<br>Tindakan impulsif membuka gawai/aplikasi AI secara repetitif tanpa menyadari motif dan kondisi emosional diri. | **Kesadaran Indrawi & Hadir Sepenuhnya**:<br>Melatih kepekaan indrawi melalui *Mindful Eating* dan *Mindful Listening* sebagai laboratorium mini keluar dari pilot otomatis. |
+| **Keterasingan Emosional Internal**:<br>Mencari kenyamanan emosional instan dari sumber eksternal (AI) alih-alih mengolah kekuatan emosi diri. | **Penguatan Sumber Daya Internal**:<br>Mengembangkan *Self-Compassion* (welas asih) dan *Gratitude* (rasa syukur) sebagai daya tahan emosional internal yang sehat. |
+| **Kerentanan Berdasarkan Tipe Kepribadian**:<br>Setiap individu merespons tekanan emosional dan interaksi AI secara berbeda berdasarkan profil psikologisnya. | **Intervensi Berbasis Big Five Personality**:<br>Pengukuran awal *IPIP-BFM-50* untuk memetakan kepribadian (OCEAN) dan menyesuaikan strategi penguatan karakter yang tepat. |
 
 ---
 
@@ -27,35 +28,46 @@ Website ini dikembangkan menggunakan **Next.js** dan **Tailwind CSS**. Berikut a
 *   **File Entry**: [page.tsx](file:///home/alpha/Documents/PKM/app/page.tsx)
 *   **Komponen Utama**:
     *   [hero-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/hero-section.tsx): Menampilkan visual hero interaktif.
-    *   [what-is-mbpp-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/what-is-mbpp-section.tsx): Menjabarkan gambaran umum dan pilar dasar MBPP (*Mindfulness* & *Big Five*).
-    *   [why-mbpp-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/why-mbpp-section.tsx): Membandingkan tantangan digital Gen Z dan solusi MBPP.
-    *   [how-it-works-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/how-it-works-section.tsx): Menggambarkan alur dan mekanisme program intervensi dari *Pre-test* hingga *Post-test*.
-    *   [featured-module-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/featured-module-section.tsx): Menampilkan modul pembelajaran unggulan MBPP.
+    *   [what-is-mbpp-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/what-is-mbpp-section.tsx): Menjabarkan gambaran umum MBPP dan penanganan ketergantungan curhat AI pada Gen Z.
+    *   [why-mbpp-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/why-mbpp-section.tsx): Membandingkan tantangan *automatic pilot* curhat AI dan solusi kekuatan karakter MBPP.
+    *   [how-it-works-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/how-it-works-section.tsx): Menggambarkan alur 4 langkah intervensi dari Pre-test (CAIDS-20 & IPIP-BFM-50) hingga Post-test & Fidelitas.
+    *   [featured-module-section.tsx](file:///home/alpha/Documents/PKM/components/sections/home/featured-module-section.tsx): Menampilkan 4 Pertemuan Utama kurikulum MBPP.
 
-### 2. Kurikulum Modul (`/modules`)
+### 2. Kurikulum Modul Intervensi (`/modules`)
 *   **File Entry**: [modules/page.tsx](file:///home/alpha/Documents/PKM/app/modules/page.tsx)
-*   **Isi Konten**: Katalog 5 modul interaktif untuk peserta:
-    1.  **Modul 1: Mengenal Diri di Era AI** (*AI Awareness & Self-Discovery* - 90 Menit / 1 Sesi)
-    2.  **Modul 2: Kesadaran Penuh dalam Interaksi Digital** (*Mindful Digital Interaction* - 90 Menit / 1 Sesi)
-    3.  **Modul 3: Membangun Batasan Emosional Sehat** (*Mitigating AI Intimacy & Attachment* - 90 Menit / 1 Sesi)
-    4.  **Modul 4: Kedaulatan Kognitif & Berpikir Kritis** (*Reclaiming Cognitive Agency* - 90 Menit / 1 Sesi)
-    5.  **Modul 5: Implementasi Harian & Efikasi Diri** (*Digital Self-Efficacy & Habit Integration* - 120 Menit / 2 Sesi)
+*   **Isi Konten**: Katalog 4 Pertemuan Utama Intervensi Tatap Muka:
+    1.  **Pertemuan 1: Menyapa Diri dan Menyadari Saat Ini** (130 Menit / 3 Sub-sesi)
+        *   Rapport & Aturan Kelompok, Pretest, Gambar Simbol Diri.
+        *   Latihan Kesadaran Napas & Tubuh (Pemanasan Detak Jantung, Pernapasan Sadar, Body Scan).
+        *   Kekuatan Karakter: Ketekunan (*"Satu Langkah, Tetap Melangkah"*). Kalender Latihan Harian.
+    2.  **Pertemuan 2: Hadir Sepenuhnya, Berpikir Sebelum Bertindak** (130 Menit / 3 Sub-sesi)
+        *   Psikoedukasi Automatic Pilot & Kebiasaan Curhat ke AI.
+        *   Makan & Mendengar dengan Penuh Kesadaran (*Mindful Eating*, Silent Gazing, Mindful Listening).
+        *   Kekuatan Karakter: Kehati-hatian (*"Berhenti, Pikirkan, Bertindak"*).
+    3.  **Pertemuan 3: Welas Asih dan Kebersyukuran** (130 Menit / 3 Sub-sesi)
+        *   Psikoedukasi Self-Compassion & Gratitude sebagai Alternatif Internal Dukungan AI.
+        *   Latihan Welas Asih (*Loving-Kindness Meditation* 5 Sosok) & *Daftar Syukur dari Namaku*.
+        *   Kekuatan Karakter: Keterbukaan Pembelajaran (*Love of Learning*). Jurnal Syukur Harian.
+    4.  **Pertemuan 4: Evaluasi dan Penutupan** (60 Menit / 1 Sub-sesi)
+        *   Presentasi Latihan Mandiri / Riset Topik Baru.
+        *   Rangkuman Intervensi, Refleksi Akhir *"Yang tersisa dariku..."*.
+        *   Posttest (Skala Mindfulness, CAIDS-20), Form Evaluasi, Manipulation Check & Fidelitas Intervensi.
 
 ### 3. Tentang Proyek (`/about`)
 *   **File Entry**: [about/page.tsx](file:///home/alpha/Documents/PKM/app/about/page.tsx)
 *   **Isi Konten**:
-    *   Menjelaskan latar belakang riset akademis, standar etika perlindungan data partisipan, dan kolaborasi lintas disiplin ilmu.
-    *   [developer-section.tsx](file:///home/alpha/Documents/PKM/components/sections/about/developer-section.tsx): Profil tim peneliti dan developer.
-    *   Formulir kontak bagi institusi pendidikan atau peneliti lain yang tertarik berkolaborasi.
+    *   Menjelaskan latar belakang riset akademis, standar etika perlindungan data partisipan, dan metodologi RCT.
+    *   [developer-section.tsx](file:///home/alpha/Documents/PKM/components/sections/about/developer-section.tsx): Profil Tim Peneliti Fakultas Psikologi & TIK Universitas Negeri Makassar.
+    *   Formulir kontak bagi institusi pendidikan atau peneliti lain.
 
 ### 4. Sumber Daya & Publikasi (`/resources`)
 *   **File Entry**: [resources/page.tsx](file:///home/alpha/Documents/PKM/app/resources/page.tsx)
 *   **Isi Konten**:
-    *   **Artikel Edukasi**: Artikel mengenai mindfulness, kedaulatan kognitif, dan keterikatan emosional semu remaja dengan AI (*AI Intimacy*).
-    *   **Publikasi Riset**: Jurnal ilmiah yang dipublikasikan di *Journal of Cyberpsychology & Digital Wellness* dan *Frontiers in Psychology*.
-    *   **Bahan Unduhan (PDF)**: Dokumen penunjang seperti *MBPP Daily Reflection Workbook.pdf*, *Big Five Personality Digital Assessment Sheet.pdf*, dan *Mindful AI Checklist & Guidelines.pdf*.
+    *   **Artikel Edukasi**: Fenomena ketergantungan curhat AI, mindfulness, dan kekuatan karakter.
+    *   **Publikasi Riset**: Publikasi jurnal cyberpsychology dan psikologi klinis.
+    *   **Bahan Unduhan (PDF)**: Dokumen penunjang resmi: *Modul Eksperimen MBPP Revisi 2026.pdf*, *Kalender Latihan Harian & Jurnal Syukur.pdf*, *Lembar Observasi Fidelitas & Manipulation Check.pdf*, dan *Instrumen Pengukuran CAIDS-20 & IPIP-BFM-50.pdf*.
 
 ---
 
 ## 🔬 Desain Penelitian & Metodologi
-Program intervensi MBPP diuji menggunakan desain **Randomized Controlled Trial (RCT)** dengan kelompok eksperimen dan kelompok kontrol. Hal ini bertujuan untuk memastikan keefektifan program secara empiris sebelum diimplementasikan secara luas kepada peserta/institusi pendidikan.
+Program intervensi MBPP diuji menggunakan desain **Randomized Controlled Trial (RCT)** dengan kelompok eksperimen dan kelompok kontrol pada partisipan Generasi Z (usia 18–28 tahun). Penilaian tingkat ketergantungan curhat pada AI diukur dengan instrumen **CAIDS-20**, kepribadian dipetakan dengan **IPIP-BFM-50**, serta kepatuhan pelaksanaan intervensi dipantau via **Lembar Observasi Fidelitas (Treatment Fidelity Checklist)**.

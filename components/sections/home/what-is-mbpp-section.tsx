@@ -23,12 +23,12 @@ const pillars = [
   {
     mark: "M",
     title: "Mindfulness Practice",
-    body: "Melatih kemampuan untuk sadar secara penuh saat menggunakan AI, mengenali dorongan impulsif, serta mengelola kecemasan kognitif di dunia digital.",
+    body: "Melatih kesadaran penuh terhadap momen saat ini, membantu mengenali dorongan automatic pilot untuk langsung curhat ke AI saat tertekan emosional.",
   },
   {
     mark: "P",
-    title: "Big Five Personality",
-    body: "Memahami bagaimana karakteristik kepribadian unik Anda — seperti kecenderungan Neuroticism atau Openness — memengaruhi pola interaksi Anda dengan AI.",
+    title: "Big Five & Character Strengths",
+    body: "Mengembangkan kekuatan karakter unik (Ketekunan, Kehati-hatian, Welas Asih, Rasa Syukur) berbasis kepribadian Big Five sebagai strategi regulasi emosi internal.",
   },
 ]
 
@@ -108,11 +108,7 @@ export function WhatIsMbppSection() {
           variants={fadeInUp}
           className="mb-16 max-w-2xl text-sm leading-relaxed text-[#1E2A22]/70 md:text-base"
         >
-          MBPP adalah program psikoedukasi berbasis ilmiah yang dirancang khusus
-          untuk membantu Gen Z membangun hubungan yang lebih sehat dan
-          berkesadaran dengan teknologi Kecerdasan Buatan (AI) — memadukan
-          pendekatan kesadaran diri (Mindfulness) dengan kerangka psikologis
-          Big Five Personality.
+          MBPP adalah program psikoedukasi berbasis penelitian yang dirancang khusus untuk menurunkan tingkat ketergantungan curhat pada Artificial Intelligence (AI) pada Generasi Z — memadukan latihan kesadaran penuh (Mindfulness) dengan penguatan kekuatan karakter berbasis kerangka Big Five Personality.
         </motion.p>
 
         {/* Core Pillars */}
@@ -146,10 +142,10 @@ export function WhatIsMbppSection() {
           className="mt-16 border-y border-[#B08D57]/30 px-6 py-4"
         >
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#B08D57]">
-            Tujuan Utama
+            Tujuan Utama Program
           </p>
           <p className="mt-1 text-sm font-medium text-[#1E2A22]/80 md:text-base">
-            Meningkatkan kesejahteraan mental &amp; efikasi diri digital Gen Z
+            Menurunkan ketergantungan curhat ke AI &amp; membangun regulasi emosi internal yang sehat pada Generasi Z
           </p>
         </motion.div>
       </motion.div>

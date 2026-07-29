@@ -7,32 +7,32 @@ const team = [
   {
     name: "Muhammad Rafli Hidayatullah Arif",
     nickname: "Rafli",
-    role: "Psikologi",
+    role: "Fakultas Psikologi, UNM",
     img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop",
   },
   {
     name: "Riswandi",
     nickname: "Wandi",
-    role: "Psikologi",
+    role: "Fakultas Psikologi, UNM",
     img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop",
   },
   {
-    name: "Andi Fadli Risandi Kresna",
+    name: "Andi Fadli Hidayat Risandi Kresna",
     nickname: "Fadli",
-    role: "Psikologi",
+    role: "Fakultas Psikologi, UNM",
     img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop",
   },
   {
     name: "Rahmaddika Alwadi",
     nickname: "Alwa",
-    role: "Psikologi",
+    role: "Fakultas Psikologi, UNM",
     img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop",
   },
   {
     name: "Muhammad Alfarizi",
     nickname: "Alfarizi",
-    role: "Teknik Informatika dan Komputer",
-    img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=600&auto=format&fit=crop",
+    role: "Teknik Informatika dan Komputer, UNM",
+    img: "alfa.png",
   },
 ]
 
@@ -143,7 +143,7 @@ export function DeveloperSection() {
                   </p>
                   <p
                     className="text-[#c9b6f2] font-semibold tracking-wider transition-all duration-300 whitespace-nowrap uppercase text-[10px]"
-                    style={{ 
+                    style={{
                       opacity: isActive ? 1 : 0.8,
                       marginTop: "2px"
                     }}

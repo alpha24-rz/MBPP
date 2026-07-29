@@ -44,3 +44,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Modern Thin Purple Scrollbar Custom Utilities */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7c4fd4;
+}
+
+/* Firefox Scrollbar Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c4b5fd #FAF8F5;
+}
+
+/* Special High-Contrast Purple Scrollbar for Admin Modals */
+.custom-purple-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-purple-scrollbar::-webkit-scrollbar-track {
+  background: #f5f3ff;
+  border-radius: 10px;
+}
+
+.custom-purple-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a855f7 0%, #7c4fd4 100%);
+  border-radius: 10px;
+}
+
+.custom-purple-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #683cb8;
+}

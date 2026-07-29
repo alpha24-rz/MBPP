@@ -95,10 +95,10 @@ export default function AboutPage() {
             Mengenal MBPP lebih Dekat
           </motion.h2>
           <motion.p variants={fadeInUp} className="text-sm md:text-base leading-relaxed text-foreground/80 mb-6">
-            **Mindfulness-Based Psychoeducation Programme (MBPP)** lahir dari kegelisahan akademis akan masifnya penetrasi teknologi AI dalam keseharian Generasi Z. Interaksi tanpa jeda dengan AI seringkali melumpuhkan kemampuan kognitif orisinal dan memicu ketergantungan psikologis yang mendalam (*AI intimacy*).
+            **Mindfulness-Based Psychoeducation Programme (MBPP)** dikembangkan oleh Tim Peneliti Fakultas Psikologi Universitas Negeri Makassar (2026) untuk merespons tingginya ketergantungan Generasi Z dalam mencurahkan isi hati (*curhat*) dan mencari validasi emosional secara instan dari agen percakapan berbasis Artificial Intelligence (AI).
           </motion.p>
           <motion.p variants={fadeInUp} className="text-sm md:text-base leading-relaxed text-foreground/80">
-            Penelitian eksperimental ini merumuskan intervensi psikoedukasi berbasis kesadaran diri (*mindfulness*) yang dikombinasikan dengan asesmen kepribadian *Big Five*. Tujuannya adalah membantu individu mengenali kelemahan psikologis unik mereka saat berinteraksi dengan AI dan melatih kembali kedaulatan kognitif mereka (*cognitive agency*).
+            Penelitian eksperimental ini menguji efektivitas program psikoedukasi 4 kali pertemuan tatap muka yang memadukan latihan *mindfulness* dengan penguatan kekuatan karakter (*Ketekunan, Kehati-hatian, Welas Asih, Rasa Syukur*) berbasis kerangka *Big Five Personality*. Evaluasi dilakukan menggunakan instrumen **CAIDS-20** (ketergantungan curhat AI) dan **IPIP-BFM-50** (pemetaan tipe kepribadian).
           </motion.p>
         </motion.div>
       </section>
