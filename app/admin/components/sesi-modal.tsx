@@ -313,7 +313,7 @@ export function SesiModal({
                 </span>
               </div>
               <p className="text-[10px] text-muted-foreground">
-                Klik tombol panah **Ke Atas (▲)** atau **Ke Bawah (▼)** untuk mengubah posisi elemen (misal: memindahkan Jurnal Syukur 31 Hari ke bagian atas).
+                Klik tombol panah <strong className="font-bold text-[#2a1845]">Ke Atas (▲)</strong> atau <strong className="font-bold text-[#2a1845]">Ke Bawah (▼)</strong> untuk mengubah posisi elemen (misal: memindahkan Jurnal Syukur 31 Hari ke bagian atas).
               </p>
               <div className="space-y-1.5 max-h-48 overflow-y-auto custom-purple-scrollbar pr-1">
                 {currentOrder.map((blockKey, idx) => {
