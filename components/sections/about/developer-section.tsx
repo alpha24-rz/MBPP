@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion , type Variants } from "framer-motion"
 
 const team = [
   {
@@ -36,20 +36,20 @@ const team = [
   },
 ]
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 60,
       damping: 12,
     },
   },
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -90,7 +90,7 @@ export function DeveloperSection() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ type: "spring", stiffness: 50, damping: 15 }}
+          transition={{ type: "spring" as const, stiffness: 50, damping: 15 }}
           className="hidden md:flex mx-auto max-w-5xl h-[450px] overflow-hidden rounded-3xl border border-[#e8e0f7] bg-white/50 shadow-xl shadow-purple-950/5"
         >
           {team.map((member, i) => {

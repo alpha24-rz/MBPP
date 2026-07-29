@@ -2,22 +2,22 @@
 
 import Link from "next/link"
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion , type Variants } from "framer-motion"
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 60,
       damping: 12,
     },
   },
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -38,7 +38,7 @@ export function CtaSection() {
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ type: "spring", stiffness: 50, damping: 15 }}
+          transition={{ type: "spring" as const, stiffness: 50, damping: 15 }}
           className="relative overflow-hidden rounded-3xl border border-[#e8e0f7] bg-gradient-to-br from-[#2a1845] to-[#1a0f2d] px-8 py-16 text-center shadow-xl shadow-purple-950/20 md:px-16 md:py-20"
         >
           

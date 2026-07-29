@@ -1,17 +1,17 @@
 "use client"
 
-import { motion, useReducedMotion } from "framer-motion"
+import { motion, useReducedMotion , type Variants } from "framer-motion"
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 60, damping: 14 },
+    transition: { type: "spring" as const, stiffness: 60, damping: 14 },
   },
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,

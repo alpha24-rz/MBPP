@@ -24,11 +24,11 @@ export function AdminTabs({
   setSearchQuery,
 }: AdminTabsProps) {
   return (
-    <div className="bg-white rounded-3xl p-3 border border-purple-100 shadow-sm mb-8 flex flex-wrap items-center justify-between gap-3">
-      <div className="flex flex-wrap gap-2">
+    <div className="bg-white rounded-3xl p-3 border border-purple-100 shadow-sm mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="flex overflow-x-auto pb-1 md:pb-0 flex-nowrap md:flex-wrap gap-2 custom-purple-scrollbar">
         <button
           onClick={() => setActiveView("modules")}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeView === "modules" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
           }`}
         >
@@ -39,7 +39,7 @@ export function AdminTabs({
 
         <button
           onClick={() => setActiveView("pertemuan")}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeView === "pertemuan" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
           }`}
         >
@@ -50,7 +50,7 @@ export function AdminTabs({
 
         <button
           onClick={() => setActiveView("sessions")}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeView === "sessions" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
           }`}
         >
@@ -61,7 +61,7 @@ export function AdminTabs({
 
         <button
           onClick={() => setActiveView("journals")}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
             activeView === "journals" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
           }`}
         >

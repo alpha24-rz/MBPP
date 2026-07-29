@@ -8,6 +8,7 @@ import { Navbar } from "@/components/common/navbar"
 import { Footer } from "@/components/common/footer"
 import { supabase } from "@/lib/supabaseClient"
 import { useAuth } from "@/lib/auth-context"
+import { uploadFileToSupabase } from "@/lib/upload-utils"
 
 import { BADGE_COLOR_PRESETS } from "./components/constants"
 import { AdminHeader } from "./components/admin-header"
@@ -154,36 +155,30 @@ export default function AdminConsolePage() {
   }, [])
 
   // Image Upload Handler
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (url: string) => void,
+    bucketName: string = "module-images"
+  ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onloadend = async () => {
-      const base64Url = reader.result as string
-      setter(base64Url)
+    const result = await uploadFileToSupabase({
+      bucketName,
+      file,
+      allowedTypes: ["image/*"],
+      maxSizeMB: 5,
+    })
 
-      try {
-        const fileName = `module-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`
-        const { data, error } = await supabase.storage
-          .from("module-images")
-          .upload(fileName, file, { upsert: true })
-
-        if (!error && data) {
-          const { data: publicUrlData } = supabase.storage.from("module-images").getPublicUrl(data.path)
-          if (publicUrlData?.publicUrl) {
-            setter(publicUrlData.publicUrl)
-          }
-        }
-      } catch (err) {
-        console.log("Supabase storage fallback to base64:", err)
-      }
+    if (result.success && result.url) {
+      setter(result.url)
+    } else {
+      throw new Error(result.error || "Gagal mengupload gambar.")
     }
-    reader.readAsDataURL(file)
   }
 
   // Media File Upload Handler (Audio / Video / Image)
-  const handleMediaFileUpload = (
+  const handleMediaFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (url: string) => void,
     bucketName: string = "session-media"
@@ -191,28 +186,31 @@ export default function AdminConsolePage() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onloadend = async () => {
-      const base64Url = reader.result as string
-      setter(base64Url)
-
-      try {
-        const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`
-        const { data, error } = await supabase.storage
-          .from(bucketName)
-          .upload(fileName, file, { upsert: true })
-
-        if (!error && data) {
-          const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(data.path)
-          if (publicUrlData?.publicUrl) {
-            setter(publicUrlData.publicUrl)
-          }
-        }
-      } catch (err) {
-        console.log("Supabase storage media fallback to base64:", err)
-      }
+    let allowedTypes = ["image/*", "audio/*", "video/*"]
+    let maxSizeMB = 25
+    if (bucketName.includes("image")) {
+      allowedTypes = ["image/*"]
+      maxSizeMB = 5
+    } else if (bucketName.includes("audio")) {
+      allowedTypes = ["audio/*"]
+      maxSizeMB = 25
+    } else if (bucketName.includes("video")) {
+      allowedTypes = ["video/*"]
+      maxSizeMB = 50
     }
-    reader.readAsDataURL(file)
+
+    const result = await uploadFileToSupabase({
+      bucketName,
+      file,
+      allowedTypes,
+      maxSizeMB,
+    })
+
+    if (result.success && result.url) {
+      setter(result.url)
+    } else {
+      throw new Error(result.error || "Gagal mengupload file media.")
+    }
   }
 
   // Modul Handlers

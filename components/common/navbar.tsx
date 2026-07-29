@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ChevronDown, User, LogOut, Menu, X, LayoutDashboard } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -58,6 +59,10 @@ export function Navbar() {
   const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
 
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false)
+  }, [])
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -71,6 +76,27 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // Close mobile menu on Escape key
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMobileMenu()
+    }
+    document.addEventListener("keydown", onKey)
+    return () => document.removeEventListener("keydown", onKey)
+  }, [closeMobileMenu])
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [mobileMenuOpen])
 
   const toggleMobileItem = (item: string) => {
     setMobileExpandedItem(mobileExpandedItem === item ? null : item)
@@ -310,140 +336,185 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu Panel */}
-      {mobileMenuOpen && (
-        <div className={cn(
-          "md:hidden border-t px-5 pb-4 rounded-b-2xl backdrop-blur-lg transition-colors",
-          isScrolled
-            ? "bg-white/95 border-gray-200/80 text-gray-800"
-            : "bg-[#130b24]/90 border-white/10 text-white"
-        )}>
-          <div className="pt-3 space-y-1">
+      {/* Mobile Menu Panel with AnimatePresence */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Backdrop Overlay */}
+            <motion.div
+              key="mobile-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={closeMobileMenu}
+              className="md:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+            />
 
-            {/* Mobile Home */}
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
+            {/* Menu Panel */}
+            <motion.div
+              key="mobile-menu"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
               className={cn(
-                "flex py-2 px-3 rounded-xl text-sm font-medium transition-colors",
-                isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
+                "md:hidden fixed top-0 left-0 right-0 z-50 border-b shadow-2xl overflow-y-auto",
+                "max-h-[85vh]",
+                isScrolled
+                  ? "bg-white/98 border-gray-200/80 text-gray-800"
+                  : "bg-[#130b24]/97 border-white/10 text-white"
               )}
             >
-              Beranda
-            </Link>
-
-            {/* Mobile About the Project */}
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className={cn(
-                "flex py-2 px-3 rounded-xl text-sm font-medium transition-colors",
-                isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
-              )}
-            >
-              Tentang Penelitian
-            </Link>
-
-            {/* Mobile Modules */}
-            <Link
-              href="/modules"
-              onClick={() => setMobileMenuOpen(false)}
-              className={cn(
-                "flex py-2 px-3 rounded-xl text-sm font-medium transition-colors",
-                isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
-              )}
-            >
-              Modul
-            </Link>
-
-            {/* Mobile Resources */}
-            <Link
-              href="/resources"
-              onClick={() => setMobileMenuOpen(false)}
-              className={cn(
-                "flex py-2 px-3 rounded-xl text-sm font-medium transition-colors",
-                isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
-              )}
-            >
-              Pustaka
-            </Link>
-
-            {/* Mobile Auth */}
-            <div className={cn(
-              "pt-2 border-t",
-              isScrolled ? "border-gray-200" : "border-white/10"
-            )}>
-              {loading ? (
-                <div className="flex justify-center py-2">
-                  <div className={cn(
-                    "h-6 w-6 rounded-full border-2 animate-spin",
-                    isScrolled ? "border-gray-300 border-t-gray-800" : "border-white/20 border-t-white"
-                  )} />
-                </div>
-              ) : isLoggedIn ? (
-                <div className="space-y-1">
-                  {user && user.user_metadata?.role === "admin" && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2 py-2 px-3 rounded-xl text-sm font-semibold text-[#7c4fd4] hover:text-[#5e35b8] hover:bg-gray-100 transition-colors"
-                    >
-                      <LayoutDashboard className="h-4 w-4" />
-                      Konsol Admin
-                    </Link>
+              {/* Menu Header with Close button */}
+              <div className={cn(
+                "flex items-center justify-between px-5 py-4 border-b",
+                isScrolled ? "border-gray-100" : "border-white/10"
+              )}>
+                <span className={cn("text-sm font-bold", isScrolled ? "text-[#2a1845]" : "text-white")}>
+                  Menu Navigasi
+                </span>
+                <button
+                  onClick={closeMobileMenu}
+                  className={cn(
+                    "p-1.5 rounded-full transition-colors",
+                    isScrolled ? "text-gray-500 hover:bg-gray-100 hover:text-gray-900" : "text-white/70 hover:bg-white/10 hover:text-white"
                   )}
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-2 py-2 px-3 rounded-xl text-sm font-medium transition-colors",
-                      isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
-                    )}
-                  >
-                    <User className="h-4 w-4" />
-                    Profil
-                  </Link>
-                  <button
-                    onClick={async () => {
-                      await signOut()
-                      setMobileMenuOpen(false)
-                      router.push("/")
-                    }}
-                    className={cn(
-                      "flex w-full items-center gap-2 py-2 px-3 rounded-xl text-sm font-medium cursor-pointer transition-colors",
-                      isScrolled ? "text-red-600 hover:text-red-700 hover:bg-red-50" : "text-red-300 hover:text-red-200 hover:bg-white/10"
-                    )}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Keluar
-                  </button>
-                </div>
-              ) : (
-                <div className="flex gap-2 pt-1">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex-1 py-2 text-center text-sm font-medium rounded-xl transition-colors",
-                      isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
-                    )}
-                  >
-                    Masuk
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 py-2 text-center text-sm font-semibold text-white rounded-xl bg-primary hover:bg-primary/90 transition-all duration-200"
-                  >
-                    Daftar
-                  </Link>
-                </div>
-              )}
-            </div>
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
-          </div>
-        </div>
-      )}
+              <div className="px-5 pt-4 pb-6 space-y-1">
+
+                {/* Mobile Home */}
+                <Link
+                  href="/"
+                  onClick={closeMobileMenu}
+                  className={cn(
+                    "flex py-3 px-3 rounded-xl text-sm font-medium transition-colors",
+                    isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
+                  )}
+                >
+                  Beranda
+                </Link>
+
+                {/* Mobile About the Project */}
+                <Link
+                  href="/about"
+                  onClick={closeMobileMenu}
+                  className={cn(
+                    "flex py-3 px-3 rounded-xl text-sm font-medium transition-colors",
+                    isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
+                  )}
+                >
+                  Tentang Penelitian
+                </Link>
+
+                {/* Mobile Modules */}
+                <Link
+                  href="/modules"
+                  onClick={closeMobileMenu}
+                  className={cn(
+                    "flex py-3 px-3 rounded-xl text-sm font-medium transition-colors",
+                    isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
+                  )}
+                >
+                  Modul Intervensi
+                </Link>
+
+                {/* Mobile Resources */}
+                <Link
+                  href="/resources"
+                  onClick={closeMobileMenu}
+                  className={cn(
+                    "flex py-3 px-3 rounded-xl text-sm font-medium transition-colors",
+                    isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
+                  )}
+                >
+                  Pustaka
+                </Link>
+
+                {/* Mobile Auth */}
+                <div className={cn(
+                  "pt-3 mt-1 border-t",
+                  isScrolled ? "border-gray-200" : "border-white/10"
+                )}>
+                  {loading ? (
+                    <div className="flex justify-center py-3">
+                      <div className={cn(
+                        "h-6 w-6 rounded-full border-2 animate-spin",
+                        isScrolled ? "border-gray-300 border-t-gray-800" : "border-white/20 border-t-white"
+                      )} />
+                    </div>
+                  ) : isLoggedIn ? (
+                    <div className="space-y-1">
+                      {user && user.user_metadata?.role === "admin" && (
+                        <Link
+                          href="/admin"
+                          onClick={closeMobileMenu}
+                          className="flex items-center gap-2.5 py-3 px-3 rounded-xl text-sm font-semibold text-[#7c4fd4] hover:text-[#5e35b8] hover:bg-purple-50 transition-colors"
+                        >
+                          <LayoutDashboard className="h-4 w-4" />
+                          Konsol Admin
+                        </Link>
+                      )}
+                      <Link
+                        href="/profile"
+                        onClick={closeMobileMenu}
+                        className={cn(
+                          "flex items-center gap-2.5 py-3 px-3 rounded-xl text-sm font-medium transition-colors",
+                          isScrolled ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100" : "text-white/80 hover:text-white hover:bg-white/10"
+                        )}
+                      >
+                        <User className="h-4 w-4" />
+                        Profil Saya
+                      </Link>
+                      <button
+                        onClick={async () => {
+                          await signOut()
+                          closeMobileMenu()
+                          router.push("/")
+                        }}
+                        className={cn(
+                          "flex w-full items-center gap-2.5 py-3 px-3 rounded-xl text-sm font-medium cursor-pointer transition-colors",
+                          isScrolled ? "text-red-600 hover:text-red-700 hover:bg-red-50" : "text-red-300 hover:text-red-200 hover:bg-white/10"
+                        )}
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Keluar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2.5 pt-1">
+                      <Link
+                        href="/login"
+                        onClick={closeMobileMenu}
+                        className={cn(
+                          "flex-1 py-2.5 text-center text-sm font-medium rounded-xl border transition-colors",
+                          isScrolled
+                            ? "text-gray-700 hover:text-gray-950 hover:bg-gray-100 border-gray-200"
+                            : "text-white/80 hover:text-white hover:bg-white/10 border-white/20"
+                        )}
+                      >
+                        Masuk
+                      </Link>
+                      <Link
+                        href="/register"
+                        onClick={closeMobileMenu}
+                        className="flex-1 py-2.5 text-center text-sm font-semibold text-white rounded-xl bg-primary hover:bg-primary/90 transition-all duration-200 shadow-md shadow-primary/20"
+                      >
+                        Daftar
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

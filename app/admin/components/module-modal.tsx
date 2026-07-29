@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { X } from "lucide-react"
+import { X, Loader2 } from "lucide-react"
 
 interface ModuleModalProps {
   isOpen: boolean
@@ -31,12 +32,30 @@ export function ModuleModal({
   onSave,
   handleImageUpload,
 }: ModuleModalProps) {
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState("")
+
   if (!isOpen) return null
 
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadError("")
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      await handleImageUpload(e, (url) => setModuleForm((prev: any) => ({ ...prev, image_url: url })))
+    } catch (err: any) {
+      setUploadError(err?.message || "Gagal mengupload gambar.")
+    } finally {
+      setUploading(false)
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white rounded-3xl p-6 relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-[#2a1845] transition-colors cursor-pointer">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-white rounded-3xl p-6 relative my-8 max-h-[90vh] overflow-y-auto custom-purple-scrollbar shadow-2xl border border-purple-100">
+        <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-[#2a1845] transition-colors cursor-pointer p-1 rounded-full hover:bg-purple-50">
           <X className="h-5 w-5" />
         </button>
         <h3 className="text-base font-serif font-bold text-[#2a1845] mb-4">
@@ -79,24 +98,38 @@ export function ModuleModal({
           <div className="flex flex-col gap-1.5 p-3.5 rounded-2xl bg-[#FAF8F5] border border-purple-100">
             <label className="font-bold text-[#2a1845] flex items-center justify-between">
               <span>Upload Gambar Modul</span>
-              <span className="text-[10px] text-muted-foreground font-normal">Format: PNG, JPG, WEBP</span>
+              <span className="text-[10px] text-muted-foreground font-normal">Maks: 5MB (PNG, JPG, WEBP)</span>
             </label>
             
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => handleImageUpload(e, (url) => setModuleForm({ ...moduleForm, image_url: url }))}
-              className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer"
+              disabled={uploading}
+              onChange={onFileChange}
+              className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer disabled:opacity-50"
             />
 
-            {moduleForm.image_url && (
+            {uploading && (
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#7c4fd4] bg-purple-50 p-2 rounded-xl border border-purple-100">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Mengupload gambar ke Supabase Storage...</span>
+              </div>
+            )}
+
+            {uploadError && (
+              <div className="text-[11px] font-semibold text-red-600 bg-red-50 p-2 rounded-xl border border-red-100">
+                {uploadError}
+              </div>
+            )}
+
+            {moduleForm.image_url && !uploading && (
               <div className="mt-2 relative w-full h-28 rounded-xl overflow-hidden border border-purple-200 bg-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={moduleForm.image_url} alt="Pratinjau Gambar" className="w-full h-full object-cover" />
                 <button
                   type="button"
                   onClick={() => setModuleForm({ ...moduleForm, image_url: "" })}
-                  className="absolute top-1.5 right-1.5 bg-black/60 text-white p-1 rounded-full text-[10px]"
+                  className="absolute top-1.5 right-1.5 bg-black/60 text-white p-1 rounded-full text-[10px] hover:bg-black/80 transition-colors"
                   title="Hapus Gambar"
                 >
                   <X className="h-3 w-3" />
@@ -116,8 +149,19 @@ export function ModuleModal({
             </div>
           </div>
 
-          <button type="submit" className="w-full rounded-xl bg-[#7c4fd4] hover:bg-[#683cb8] py-3 font-bold text-white shadow-md transition-all cursor-pointer mt-2">
-            Simpan Modul
+          <button
+            type="submit"
+            disabled={uploading}
+            className="w-full rounded-xl bg-[#7c4fd4] hover:bg-[#683cb8] py-3 font-bold text-white shadow-md transition-all cursor-pointer mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Mengupload Gambar...</span>
+              </>
+            ) : (
+              "Simpan Modul"
+            )}
           </button>
         </form>
       </motion.div>

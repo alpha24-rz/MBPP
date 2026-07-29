@@ -5,22 +5,22 @@ import { supabase } from "@/lib/supabaseClient"
 import { Navbar } from "@/components/common/navbar"
 import { Footer } from "@/components/common/footer"
 import { FileText, Download, BookOpen, ExternalLink, Calendar } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, type Variants } from "framer-motion"
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 70,
       damping: 12,
     },
   },
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,

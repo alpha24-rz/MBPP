@@ -4,20 +4,20 @@ import { useState, useEffect, use } from "react"
 import { Navbar } from "@/components/common/navbar"
 import { Footer } from "@/components/common/footer"
 import { supabase } from "@/lib/supabaseClient"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import { Sparkles, BookOpen, Clock, ChevronRight, ArrowLeft, Loader2, Calendar } from "lucide-react"
 import Link from "next/link"
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 70, damping: 13 },
+    transition: { type: "spring" as const, stiffness: 70, damping: 13 },
   },
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,

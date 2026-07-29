@@ -2,14 +2,14 @@
 
 import dynamic from "next/dynamic"
 import { Sparkles, Layers, Palette } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 
 const CopilotCharacter = dynamic(
   () => import("@/components/ui/copilot-character").then((mod) => mod.CopilotCharacter),
   { ssr: false }
 )
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -20,13 +20,13 @@ const containerVariants = {
   },
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 80,
       damping: 15,
     },
@@ -94,7 +94,7 @@ export function HeroSection() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{
-          type: "spring",
+          type: "spring" as const,
           stiffness: 60,
           damping: 10,
           delay: 0.6,
@@ -180,7 +180,7 @@ function FloatingCard({
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{
-        type: "spring",
+        type: "spring" as const,
         stiffness: 60,
         damping: 10,
         delay: delay * 0.5 + 0.3,

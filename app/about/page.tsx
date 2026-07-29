@@ -6,22 +6,22 @@ import { Footer } from "@/components/common/footer"
 import { TeamworkSection } from "@/components/sections/about/teamwork-section"
 import { DeveloperSection } from "@/components/sections/about/developer-section"
 import { Mail, Landmark, MessageSquare, Send, CheckCircle2 } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, type Variants } from "framer-motion"
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 60,
       damping: 12,
     },
   },
 }
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,

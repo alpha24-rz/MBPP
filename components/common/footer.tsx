@@ -9,10 +9,10 @@ export function Footer() {
       <div className="absolute -left-20 -top-20 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="mx-auto max-w-6xl relative z-10">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-8 sm:gap-10 md:grid-cols-5">
 
           {/* Brand & Institution Info */}
-          <div className="md:col-span-2 space-y-4">
+          <div className="col-span-2 md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
               <span className="text-xl font-bold bg-gradient-to-r from-purple-200 via-white to-purple-300 bg-clip-text text-transparent">
                 Ai Intimacy

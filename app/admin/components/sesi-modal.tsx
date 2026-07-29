@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import {
   X,
+  Loader2,
   Music,
   Video,
   Sparkles,
@@ -105,7 +107,30 @@ export function SesiModal({
   onSave,
   handleMediaFileUpload,
 }: SesiModalProps) {
+  const [uploadingKey, setUploadingKey] = useState<"image" | "audio" | "video" | null>(null)
+  const [uploadError, setUploadError] = useState<{ [key: string]: string }>({})
+
   if (!isOpen) return null
+
+  const handleMediaUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: "image" | "audio" | "video",
+    setter: (url: string) => void,
+    bucketName: string
+  ) => {
+    setUploadError((prev) => ({ ...prev, [key]: "" }))
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingKey(key)
+    try {
+      await handleMediaFileUpload(e, setter, bucketName)
+    } catch (err: any) {
+      setUploadError((prev) => ({ ...prev, [key]: err?.message || "Gagal mengupload file media." }))
+    } finally {
+      setUploadingKey(null)
+    }
+  }
 
   // Ensure content_order contains all valid blocks including new widgets
   const rawOrder =
@@ -355,9 +380,23 @@ export function SesiModal({
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleMediaFileUpload(e, (url) => setSesiForm({ ...sesiForm, image_url: url }), "session-images")}
-                className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer"
+                disabled={uploadingKey !== null}
+                onChange={(e) => handleMediaUpload(e, "image", (url) => setSesiForm((prev: any) => ({ ...prev, image_url: url })), "session-images")}
+                className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer disabled:opacity-50"
               />
+
+              {uploadingKey === "image" && (
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#7c4fd4] bg-purple-50 p-2 rounded-xl border border-purple-100">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Mengupload gambar ke Supabase Storage...</span>
+                </div>
+              )}
+
+              {uploadError.image && (
+                <div className="text-[11px] font-semibold text-red-600 bg-red-50 p-2 rounded-xl border border-red-100">
+                  {uploadError.image}
+                </div>
+              )}
 
               {sesiForm.image_url && (
                 <div className="mt-1.5 relative rounded-2xl overflow-hidden border border-purple-200 bg-white p-2 flex items-center gap-3">
@@ -680,17 +719,31 @@ export function SesiModal({
                 <span className="flex items-center gap-1.5">
                   <Music className="h-3.5 w-3.5 text-[#7c4fd4]" /> Audio Relaksasi / Panduan Suara
                 </span>
-                <span className="text-[10px] text-muted-foreground font-normal">MP3, WAV, OGG</span>
+                <span className="text-[10px] text-muted-foreground font-normal">Maks: 25MB (MP3, WAV, OGG)</span>
               </label>
 
               <input
                 type="file"
                 accept="audio/*"
-                onChange={(e) => handleMediaFileUpload(e, (url) => setSesiForm({ ...sesiForm, audio_url: url }), "session-audio")}
-                className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer"
+                disabled={uploadingKey !== null}
+                onChange={(e) => handleMediaUpload(e, "audio", (url) => setSesiForm((prev: any) => ({ ...prev, audio_url: url })), "session-audio")}
+                className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-[#7c4fd4] hover:file:bg-purple-200 cursor-pointer disabled:opacity-50"
               />
 
-              {sesiForm.audio_url && (
+              {uploadingKey === "audio" && (
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#7c4fd4] bg-purple-50 p-2 rounded-xl border border-purple-100">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Mengupload audio ke Supabase Storage...</span>
+                </div>
+              )}
+
+              {uploadError.audio && (
+                <div className="text-[11px] font-semibold text-red-600 bg-red-50 p-2 rounded-xl border border-red-100">
+                  {uploadError.audio}
+                </div>
+              )}
+
+              {sesiForm.audio_url && !uploadingKey && (
                 <div className="mt-1.5 p-2 rounded-xl bg-purple-900 text-white flex items-center gap-2">
                   <audio controls controlsList="nodownload" src={sesiForm.audio_url} className="w-full h-7 rounded-md">
                     Browser Anda tidak mendukung pemutar audio.
@@ -724,15 +777,29 @@ export function SesiModal({
                 <span className="flex items-center gap-1.5">
                   <Video className="h-3.5 w-3.5 text-sky-600" /> Video Guide / Panduan
                 </span>
-                <span className="text-[10px] text-muted-foreground font-normal">MP4, WEBM</span>
+                <span className="text-[10px] text-muted-foreground font-normal">Maks: 50MB (MP4, WEBM)</span>
               </label>
 
               <input
                 type="file"
                 accept="video/*"
-                onChange={(e) => handleMediaFileUpload(e, (url) => setSesiForm({ ...sesiForm, video_url: url }), "session-video")}
-                className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 cursor-pointer"
+                disabled={uploadingKey !== null}
+                onChange={(e) => handleMediaUpload(e, "video", (url) => setSesiForm((prev: any) => ({ ...prev, video_url: url })), "session-video")}
+                className="block w-full text-xs text-muted-foreground file:mr-3 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-800 hover:file:bg-sky-200 cursor-pointer disabled:opacity-50"
               />
+
+              {uploadingKey === "video" && (
+                <div className="flex items-center gap-2 text-xs font-semibold text-sky-700 bg-sky-50 p-2 rounded-xl border border-sky-100">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Mengupload video ke Supabase Storage...</span>
+                </div>
+              )}
+
+              {uploadError.video && (
+                <div className="text-[11px] font-semibold text-red-600 bg-red-50 p-2 rounded-xl border border-red-100">
+                  {uploadError.video}
+                </div>
+              )}
 
               {sesiForm.video_url && (
                 <div className="mt-1.5 relative rounded-xl overflow-hidden border border-purple-200 bg-black">
@@ -762,8 +829,19 @@ export function SesiModal({
               </div>
             </div>
 
-            <button type="submit" className="w-full rounded-xl bg-[#7c4fd4] hover:bg-[#683cb8] py-3 font-bold text-white shadow-md transition-all cursor-pointer mt-2">
-              Simpan Sesi Konten
+            <button
+              type="submit"
+              disabled={uploadingKey !== null}
+              className="w-full rounded-xl bg-[#7c4fd4] hover:bg-[#683cb8] py-3 font-bold text-white shadow-md transition-all cursor-pointer mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {uploadingKey !== null ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Mengupload File Media...</span>
+                </>
+              ) : (
+                "Simpan Sesi Konten"
+              )}
             </button>
           </form>
 

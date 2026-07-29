@@ -2,36 +2,36 @@
 
 import Image from "next/image"
 import { AlertCircle, CheckCircle2 } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion , type Variants } from "framer-motion"
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 60, damping: 12 },
+    transition: { type: "spring" as const, stiffness: 60, damping: 12 },
   },
 }
 
-const slideLeft = {
+const slideLeft: Variants = {
   hidden: { opacity: 0, x: -40 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { type: "spring", stiffness: 50, damping: 14 },
+    transition: { type: "spring" as const, stiffness: 50, damping: 14 },
   },
 }
 
-const slideRight = {
+const slideRight: Variants = {
   hidden: { opacity: 0, x: 40 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { type: "spring", stiffness: 50, damping: 14 },
+    transition: { type: "spring" as const, stiffness: 50, damping: 14 },
   },
 }
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
