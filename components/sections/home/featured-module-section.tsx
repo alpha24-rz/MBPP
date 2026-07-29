@@ -3,12 +3,11 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Sparkles, Clock, BookOpen, CheckCircle, ChevronRight } from "lucide-react"
+import { Sparkles, Clock, BookOpen, ChevronRight } from "lucide-react"
 import { supabase } from "@/lib/supabaseClient"
 
 export function FeaturedModuleSection() {
   const [activeModule, setActiveModule] = useState<any>(null)
-  const [topics, setTopics] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,32 +30,15 @@ export function FeaturedModuleSection() {
             title: firstMod.title,
             subtitle: firstMod.subtitle,
             desc: firstMod.desc_text,
-            duration: firstMod.duration || "4 Pertemuan",
-            sessions: firstMod.sessions_count || "Sesi Tatap Muka",
+            duration: firstMod.duration || "4 Pertemuan Tatap Muka",
+            sessions: firstMod.sessions_count || "4 Pertemuan Terstruktur",
           })
         } else {
           setActiveModule(null)
         }
-
-        // Fetch sub-sessions interventions
-        const { data: intData, error: intErr } = await supabase
-          .from("interventions")
-          .select("*")
-          .order("order_index", { ascending: true })
-
-        if (!intErr && intData && intData.length > 0) {
-          const mapped = intData.map(item => ({
-            title: item.title,
-            desc: item.desc_text
-          }))
-          setTopics(mapped)
-        } else {
-          setTopics([])
-        }
       } catch (e) {
         console.error("Gagal memuat data modul dari database:", e)
         setActiveModule(null)
-        setTopics([])
       } finally {
         setLoading(false)
       }
@@ -140,24 +122,15 @@ export function FeaturedModuleSection() {
                 {displayModule.desc}
               </p>
 
-              {/* Key Topics List */}
-              <div className="space-y-4 mb-8">
-                <h4 className="text-xs font-bold text-[#2a1845] tracking-wider uppercase mb-3">
-                  Sub-Sesi Intervensi Terintegrasi
-                </h4>
-                {topics.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">Belum ada sub-sesi terdaftar.</p>
-                ) : (
-                  topics.map((topic, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                      <div>
-                        <h5 className="text-sm font-bold text-[#2a1845]">{topic.title}</h5>
-                        <p className="text-xs text-[#2a1845]/70 leading-relaxed mt-0.5">{topic.desc}</p>
-                      </div>
-                    </div>
-                  ))
-                )}
+              {/* Action Link */}
+              <div className="mb-8">
+                <Link
+                  href={`/modules/${displayModule.id}`}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-[#2a1845] hover:bg-[#1a0f2d] px-6 py-3 text-xs font-bold text-white shadow-lg shadow-purple-950/10 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+                >
+                  Jelajahi Modul Ini
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
               </div>
 
               {/* Footer metadata */}
@@ -168,7 +141,7 @@ export function FeaturedModuleSection() {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <BookOpen className="h-4 w-4" />
-                  {`${topics.length} Sesi Intervensi`}
+                  {displayModule.sessions}
                 </span>
               </div>
             </div>
@@ -180,3 +153,6 @@ export function FeaturedModuleSection() {
 }
 
 export const FeaturedSection = FeaturedModuleSection
+
+
+
