@@ -130,7 +130,7 @@ export function Navbar() {
                 : "text-white/95 group-hover:text-purple-200"
             )}
           >
-            Ai Intimacy
+            AI Intimacy
           </span>
         </Link>
 

@@ -6,6 +6,19 @@ import Link from "next/link"
 import { Sparkles, Clock, BookOpen, ChevronRight } from "lucide-react"
 import { supabase } from "@/lib/supabaseClient"
 
+const DEFAULT_FEATURED_MODULE = {
+  id: "pertemuan-1",
+  number: "Pertemuan 1",
+  image: "/images/why-mbpp-harmony.png",
+  badge: "Mindfulness & Body Scan",
+  badgeColor: "bg-purple-100 text-purple-800 border border-purple-200/60",
+  title: "Menyapa Diri dan Menyadari Saat Ini",
+  subtitle: "Pernapasan Sadar, Body Scan, & Ketekunan",
+  desc: "Melatih kesadaran penuh terhadap sensasi fisik dan respons emosional tubuh, membantu mengenali dorongan automatic pilot untuk langsung curhat ke AI saat menghadapi tekanan emosional.",
+  duration: "130 Menit",
+  sessions: "3 Sub-sesi Terstruktur",
+}
+
 export function FeaturedModuleSection() {
   const [activeModule, setActiveModule] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -13,7 +26,6 @@ export function FeaturedModuleSection() {
   useEffect(() => {
     async function fetchModulesData() {
       try {
-        // Fetch first module or primary module from Supabase database
         const { data: modData, error: modErr } = await supabase
           .from("modules")
           .select("*")
@@ -23,22 +35,22 @@ export function FeaturedModuleSection() {
           const firstMod = modData[0]
           setActiveModule({
             id: firstMod.id,
-            number: firstMod.module_number || "Kurikulum MBPP",
-            image: firstMod.image_url || "/images/module-01.png",
+            number: firstMod.module_number || "Pertemuan 1",
+            image: firstMod.image_url || "/images/why-mbpp-harmony.png",
             badge: firstMod.badge || "Mindfulness MBPP",
-            badgeColor: firstMod.badge_color || "bg-violet-100 text-violet-700 border border-violet-200/50",
+            badgeColor: firstMod.badge_color || "bg-purple-100 text-purple-800 border border-purple-200/60",
             title: firstMod.title,
             subtitle: firstMod.subtitle,
             desc: firstMod.desc_text,
-            duration: firstMod.duration || "4 Pertemuan Tatap Muka",
-            sessions: firstMod.sessions_count || "4 Pertemuan Terstruktur",
+            duration: firstMod.duration || "130 Menit",
+            sessions: firstMod.sessions_count || "3 Sub-sesi Terstruktur",
           })
         } else {
-          setActiveModule(null)
+          setActiveModule(DEFAULT_FEATURED_MODULE)
         }
       } catch (e) {
         console.error("Gagal memuat data modul dari database:", e)
-        setActiveModule(null)
+        setActiveModule(DEFAULT_FEATURED_MODULE)
       } finally {
         setLoading(false)
       }

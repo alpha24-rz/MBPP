@@ -1,5 +1,13 @@
 import Link from "next/link"
 import { GraduationCap } from "lucide-react"
+const partnerLogos = [
+  { src: "/logo/logo_twh.png", alt: "TWH", className: "h-8" },
+  { src: "/logo/logo_unm.png", alt: "UNM", className: "h-8" },
+  { src: "/logo/logo_belmawa.png", alt: "Belmawa", className: "h-7" },
+  { src: "/logo/logo_dikti.png", alt: "Dikti", className: "h-7" },
+  { src: "/logo/logo_pkm.png", alt: "PKM", className: "h-7" },
+  { src: "/logo/logo_tim.png", alt: "Tim", className: "h-8" },
+]
 
 export function Footer() {
   return (
@@ -15,7 +23,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
               <span className="text-xl font-bold bg-gradient-to-r from-purple-200 via-white to-purple-300 bg-clip-text text-transparent">
-                Ai Intimacy
+                AI Intimacy
               </span>
               <span className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30">
                 MBPP UNM
@@ -26,9 +34,19 @@ export function Footer() {
               Mindfulness-Based Psychoeducation Programme (MBPP) adalah platform edukasi berbasis penelitian ilmiah dari Fakultas Psikologi UNM untuk membantu Generasi Z membangun hubungan yang sehat, beretika, dan bijak dengan AI.
             </p>
 
-            <div className="pt-2 flex items-center gap-2 text-xs text-purple-300/80">
-              <GraduationCap className="h-4 w-4 text-purple-400 shrink-0" />
-              <span>Fakultas Psikologi — Universitas Negeri Makassar</span>
+            {/* Partner Logos */}
+            <div className="mt-12 pt-8 border-t border-purple-500/15">
+
+              <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-4 rounded-2xl bg-white/95 px-6 py-4 mx-auto w-fit">
+                {partnerLogos.map((logo) => (
+                  <img
+                    key={logo.src}
+                    src={logo.src}
+                    alt={logo.alt}
+                    className={`${logo.className} w-auto object-contain`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
@@ -124,6 +142,7 @@ export function Footer() {
           </div>
 
         </div>
+
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-purple-500/15 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-purple-300/60">

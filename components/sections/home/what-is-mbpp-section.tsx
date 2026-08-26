@@ -139,14 +139,22 @@ export function WhatIsMbppSection() {
         {/* Mission statement */}
         <motion.div
           variants={fadeInUp}
-          className="mt-16 border-y border-[#B08D57]/30 px-6 py-4"
+          className="mt-12 border-y border-[#B08D57]/30 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#B08D57]">
-            Tujuan Utama Program
-          </p>
-          <p className="mt-1 text-sm font-medium text-[#1E2A22]/80 md:text-base">
-            Menurunkan ketergantungan curhat ke AI &amp; membangun regulasi emosi internal yang sehat pada Generasi Z
-          </p>
+          <div className="text-left">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#B08D57]">
+              Tujuan Utama Program
+            </p>
+            <p className="mt-1 text-sm font-medium text-[#1E2A22]/80 md:text-base">
+              Menurunkan ketergantungan curhat ke AI &amp; membangun regulasi emosi internal yang sehat.
+            </p>
+          </div>
+          <a
+            href="/about"
+            className="inline-flex shrink-0 items-center gap-1.5 text-xs font-bold text-[#5e35b8] hover:text-[#2a1845] transition-colors"
+          >
+            <span>Selengkapnya di Tentang Riset</span> &rarr;
+          </a>
         </motion.div>
       </motion.div>
     </section>

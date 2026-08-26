@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { Sparkles, Layers, Palette } from "lucide-react"
+import { Sparkles, Layers, Palette, ArrowRight } from "lucide-react"
 import { motion, type Variants } from "framer-motion"
 
 const CopilotCharacter = dynamic(
@@ -41,7 +41,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.5 }}
-        className="absolute left-1/2 top-0 -translate-x-1/2"
+        className="absolute left-1/2 top-0 -translate-x-1/2 pointer-events-none"
         style={{
           width: "190%",
           height: "170%",
@@ -51,12 +51,12 @@ export function HeroSection() {
         }}
       />
 
-      {/* Layer kedua, blur lebih kecil, biar ada sedikit ketegasan warna di bagian atas */}
+      {/* Layer kedua, blur lebih kecil */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.8, delay: 0.2 }}
-        className="absolute left-1/2 -top-20"
+        className="absolute left-1/2 -top-20 pointer-events-none"
         style={{
           width: "100%",
           height: "50%",
@@ -68,8 +68,6 @@ export function HeroSection() {
       />
 
       {/* ===== Floating cards ===== */}
-
-      {/* Kiri atas — agak besar, rotasi negatif */}
       <FloatingCard
         className="left-[6%] top-[60%] hidden md:flex"
         rotate={-8}
@@ -79,7 +77,6 @@ export function HeroSection() {
         subtitle="Kenali pola pikirmu"
       />
 
-      {/* Kiri bawah — kecil, rotasi positif, lebih ke bawah */}
       <FloatingCard
         className="left-[12%] top-[80%] hidden lg:flex"
         rotate={6}
@@ -102,13 +99,11 @@ export function HeroSection() {
         className="absolute right-[-10%] md:right-[-9%] lg:right-[-10%] xl:right-[-11%] top-[10%] md:top-[12%] lg:top-[10%] hidden md:flex flex-col items-center justify-center z-20 pointer-events-auto"
       >
         <div className="relative w-[360px] h-[360px] md:w-[420px] md:h-[420px] lg:w-[480px] lg:h-[480px] xl:w-[540px] xl:h-[540px]">
-          {/* Ambient glow behind character */}
           <div className="absolute inset-0 -z-10 rounded-full bg-[#7c4fd4]/30 blur-3xl" />
           <CopilotCharacter className="h-full w-full" />
         </div>
       </motion.div>
 
-      {/* Kanan bawah — Floating card Self Reflection */}
       <FloatingCard
         className="right-[8%] top-[78%] hidden lg:flex"
         rotate={-10}
@@ -143,7 +138,30 @@ export function HeroSection() {
         >
           Platform edukasi berbasis penelitian yang mengintegrasikan Mindfulness dan kerangka Big Five Personality untuk membantu Generasi Z mengembangkan kesadaran diri, ketahanan emosional, serta penggunaan Artificial Intelligence (AI) secara bertanggung jawab.
         </motion.p>
+
+        {/* Action Buttons */}
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-wrap items-center justify-center gap-4"
+        >
+          <a
+            href="/modules"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[#5e35b8] shadow-xl shadow-purple-950/20 transition-all hover:bg-purple-50 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Mulai Kurikulum Modul MBPP"
+          >
+            <span>Mulai Kurikulum Modul</span>
+            <ArrowRight className="h-4 w-4" />
+          </a>
+          <a
+            href="#what-is-mbpp"
+            className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Pelajari Program MBPP"
+          >
+            <span>Pelajari Program</span>
+          </a>
+        </motion.div>
       </motion.div>
+
 
       <style jsx>{`
         @keyframes floatCard {

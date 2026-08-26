@@ -32,6 +32,64 @@ const staggerContainer: Variants = {
   },
 }
 
+const DEFAULT_MODULES_LIST = [
+  {
+    id: "pertemuan-1",
+    title: "Pertemuan 1: Menyapa Diri dan Menyadari Saat Ini",
+    subtitle: "Pernapasan Sadar, Body Scan, & Ketekunan",
+    desc_text: "Sesi pembuka untuk membangun komitmen kelompok, mengukur baseline kesadaran diri (CAIDS-20 & IPIP-BFM-50), serta melatih teknik pernapasan sadar dan pemindaian tubuh (body scan) sebagai fondasi ketekunan.",
+    image_url: "/images/why-mbpp-harmony.png",
+    badge: "Mindfulness & Body Scan",
+    badge_color: "bg-[#7c4fd4]/10 text-[#7c4fd4] border border-[#7c4fd4]/20",
+    defaultPertemuan: [
+      { id: "p1-1", title: "Rapport & Pretest", subtitle: "Norma Kelompok & CAIDS-20", pertemuan_number: "Sub-sesi 1.1" },
+      { id: "p1-2", title: "Mindful Breathing & Body Scan", subtitle: "Latihan Pernapasan & Pemanasan Tubuh", pertemuan_number: "Sub-sesi 1.2" },
+      { id: "p1-3", title: "Character Strengths: Ketekunan", subtitle: "Kalender Latihan Harian Mandiri", pertemuan_number: "Sub-sesi 1.3" },
+    ]
+  },
+  {
+    id: "pertemuan-2",
+    title: "Pertemuan 2: Hadir Sepenuhnya, Berpikir Sebelum Bertindak",
+    subtitle: "Automatic Pilot, Mindful Eating, & Prudence",
+    desc_text: "Psikoedukasi mekanisme automatic pilot saat impulsif curhat ke AI. Melatih mindful eating & listening serta menerapkan prinsip Prudence (Berhenti, Pikirkan, Bertindak) sebelum berinteraksi secara digital.",
+    image_url: "/images/why-mbpp-harmony.png",
+    badge: "Automatic Pilot & Prudence",
+    badge_color: "bg-amber-100 text-amber-800 border border-amber-200/60",
+    defaultPertemuan: [
+      { id: "p2-1", title: "Psikoedukasi Automatic Pilot", subtitle: "Mengenali Refleks Curhat AI", pertemuan_number: "Sub-sesi 2.1" },
+      { id: "p2-2", title: "Mindful Eating & Listening", subtitle: "Latihan Kesadaran Indrawi", pertemuan_number: "Sub-sesi 2.2" },
+      { id: "p2-3", title: "Character Strengths: Kehati-hatian", subtitle: "Prudence & Jeda Sadar Digital", pertemuan_number: "Sub-sesi 2.3" },
+    ]
+  },
+  {
+    id: "pertemuan-3",
+    title: "Pertemuan 3: Welas Asih dan Kebersyukuran",
+    subtitle: "Self-Compassion, Gratitude, & Love of Learning",
+    desc_text: "Mengembangkan daya tahan emosional internal melalui Loving-Kindness Meditation dan Jurnal Syukur Harian sebagai alternatif dukungan emosional alami tanpa ketergantungan pada respon kecerdasan buatan.",
+    image_url: "/images/why-mbpp-harmony.png",
+    badge: "Self-Compassion & Gratitude",
+    badge_color: "bg-emerald-100 text-emerald-800 border border-emerald-200/60",
+    defaultPertemuan: [
+      { id: "p3-1", title: "Psikoedukasi Self-Compassion", subtitle: "Alternatif Dukungan Internal AI", pertemuan_number: "Sub-sesi 3.1" },
+      { id: "p3-2", title: "Loving-Kindness & Namaku", subtitle: "Meditasi 5 Sosok & Daftar Syukur", pertemuan_number: "Sub-sesi 3.2" },
+      { id: "p3-3", title: "Love of Learning", subtitle: "Refleksi Jurnal Syukur Harian", pertemuan_number: "Sub-sesi 3.3" },
+    ]
+  },
+  {
+    id: "pertemuan-4",
+    title: "Pertemuan 4: Evaluasi dan Penutupan",
+    subtitle: "Posttest, Manipulation Check, & Fidelitas",
+    desc_text: "Evaluasi menyeluruh efektivitas intervensi MBPP dengan Posttest (CAIDS-20), lembar observasi fidelitas intervensi, refleksi akhir kelompok, serta komitmen kedaulatan kognitif jangka panjang.",
+    image_url: "/images/why-mbpp-harmony.png",
+    badge: "Evaluasi & Posttest",
+    badge_color: "bg-blue-100 text-blue-800 border border-blue-200/60",
+    defaultPertemuan: [
+      { id: "p4-1", title: "Presentasi Latihan Mandiri", subtitle: "Refleksi Pengalaman Mindfulness", pertemuan_number: "Sub-sesi 4.1" },
+      { id: "p4-2", title: "Posttest CAIDS-20 & Fidelitas", subtitle: "Evaluasi & Manipulation Check", pertemuan_number: "Sub-sesi 4.2" },
+    ]
+  }
+]
+
 export default function ModulesPage() {
   const [modulesList, setModulesList] = useState<any[]>([])
   const [pertemuanList, setPertemuanList] = useState<any[]>([])
@@ -40,17 +98,17 @@ export default function ModulesPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch Modules from Supabase Database
         const { data: modData, error: modErr } = await supabase
           .from("modules")
           .select("*")
           .order("order_index", { ascending: true })
 
-        if (!modErr && modData) {
+        if (!modErr && modData && modData.length > 0) {
           setModulesList(modData)
+        } else {
+          setModulesList(DEFAULT_MODULES_LIST)
         }
 
-        // Fetch Pertemuan from Supabase Database
         const { data: pData, error: pErr } = await supabase
           .from("pertemuan")
           .select("*")
@@ -61,6 +119,7 @@ export default function ModulesPage() {
         }
       } catch (e) {
         console.error("Gagal mengambil data modul dari Supabase:", e)
+        setModulesList(DEFAULT_MODULES_LIST)
       } finally {
         setLoading(false)
       }
@@ -144,10 +203,10 @@ export default function ModulesPage() {
               className="space-y-12"
             >
               {modulesList.map((mod, idx) => {
-                // Filter pertemuan associated with this module
                 const modPertemuan = pertemuanList.filter(
                   (item) => Number(item.module_id) === Number(mod.id)
                 )
+                const displayPertemuan = modPertemuan.length > 0 ? modPertemuan : (mod.defaultPertemuan || [])
 
                 return (
                   <motion.div
@@ -184,15 +243,15 @@ export default function ModulesPage() {
                         {mod.desc_text}
                       </p>
 
-                      {/* Integrated Pertemuan List from DB */}
-                      {modPertemuan.length > 0 && (
+                      {/* Integrated Pertemuan List */}
+                      {displayPertemuan.length > 0 && (
                         <div className="mb-6 p-4 rounded-2xl bg-[#FBF6ED]/50 border border-purple-100/60">
                           <h4 className="text-xs font-bold text-[#2a1845] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                             <Calendar className="h-3.5 w-3.5 text-[#7c4fd4]" />
-                            Pertemuan Terintegrasi Dalam Modul Ini ({modPertemuan.length})
+                            Sub-sesi Terintegrasi ({displayPertemuan.length})
                           </h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            {modPertemuan.map((item, idx) => (
+                            {displayPertemuan.map((item: any, idx: number) => (
                               <div key={item.id} className="p-2.5 rounded-xl border border-purple-50 bg-white shadow-xs hover:shadow-sm transition-shadow">
                                 <span className="text-[9px] font-bold text-[#7c4fd4]">{item.pertemuan_number || `Pertemuan 0${idx + 1}`}</span>
                                 <h5 className="text-xs font-bold text-[#2a1845] line-clamp-1">{item.title}</h5>
@@ -207,7 +266,7 @@ export default function ModulesPage() {
                         <div className="flex items-center gap-4 text-xs font-semibold text-[#7c4fd4]">
                           <span className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            {modPertemuan.length} Pertemuan
+                            {displayPertemuan.length} Sesi Terstruktur
                           </span>
                         </div>
 
