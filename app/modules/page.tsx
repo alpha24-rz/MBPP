@@ -213,10 +213,10 @@ export default function ModulesPage() {
                     variants={fadeInUp}
                     whileHover={{ y: -6, boxShadow: "0 10px 30px -15px rgba(42, 24, 69, 0.15)" }}
                     key={mod.id}
-                    className="flex flex-col lg:flex-row items-center gap-8 p-6 rounded-3xl border border-[#e8e0f7] bg-white transition-all duration-300 shadow-sm"
+                    className="flex flex-col lg:flex-row items-center lg:items-stretch gap-8 p-6 rounded-3xl border border-[#e8e0f7] bg-white transition-all duration-300 shadow-sm"
                   >
                     {/* Visual Image */}
-                    <div className="relative w-full lg:w-[280px] shrink-0 aspect-[4/3] rounded-2xl overflow-hidden shadow-md group bg-purple-50">
+                    <div className="relative w-full lg:w-[280px] shrink-0 aspect-[4/3] lg:aspect-auto lg:h-auto rounded-2xl overflow-hidden shadow-md group bg-purple-50">
                       <Image
                         src={mod.image_url || "/images/module-01.png"}
                         alt={mod.title}
