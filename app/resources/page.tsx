@@ -165,6 +165,7 @@ const DEFAULT_DOWNLOADS = [
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<"bibliography" | "papers" | "downloads">("bibliography")
   const [searchQuery, setSearchQuery] = useState("")
+  const [bibliographyList, setBibliographyList] = useState<any[]>(BIBLIOGRAPHY)
   const [papers, setPapers] = useState<any[]>([])
   const [downloads, setDownloads] = useState<any[]>(DEFAULT_DOWNLOADS)
   const [copiedId, setCopiedId] = useState<string | null>(null)
@@ -172,6 +173,37 @@ export default function ResourcesPage() {
   useEffect(() => {
     async function fetchDatabaseResources() {
       try {
+        // Fetch Bibliographies / Sitasi
+        const { data: bibData } = await supabase
+          .from("bibliographies")
+          .select("*")
+          .order("order_index", { ascending: true })
+
+        if (bibData && bibData.length > 0) {
+          const map = new Map<string, any[]>()
+          for (const item of bibData) {
+            const cat = item.category || "Umum & Referensi Akademis"
+            if (!map.has(cat)) {
+              map.set(cat, [])
+            }
+            map.get(cat)!.push({
+              id: String(item.id),
+              authors: item.authors,
+              year: String(item.year),
+              title: item.title,
+              source: item.source,
+              doi: item.doi || null,
+              tag: item.tag || "Sitasi MBPP",
+            })
+          }
+          const formatted = Array.from(map.entries()).map(([category, citations]) => ({
+            category,
+            citations,
+          }))
+          setBibliographyList(formatted)
+        }
+
+        // Fetch Research Papers
         const { data: paperData } = await supabase
           .from("research_papers")
           .select("*")
@@ -181,6 +213,7 @@ export default function ResourcesPage() {
           setPapers(paperData)
         }
 
+        // Fetch Downloads
         const { data: dlData } = await supabase
           .from("downloads")
           .select("*")
@@ -203,15 +236,19 @@ export default function ResourcesPage() {
   }
 
   // Filter Daftar Pustaka berdasarkan kata kunci pencarian
-  const filteredBibliography = BIBLIOGRAPHY.map((cat) => ({
-    ...cat,
-    citations: cat.citations.filter((c) =>
-      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.authors.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.year.includes(searchQuery)
-    ),
-  })).filter((cat) => cat.citations.length > 0)
+  const filteredBibliography = bibliographyList
+    .map((cat) => ({
+      ...cat,
+      citations: (cat.citations || []).filter(
+        (c: any) =>
+          c.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.authors?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.tag?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.year?.includes(searchQuery)
+      ),
+    }))
+    .filter((cat) => cat.citations.length > 0)
+
 
   return (
     <main className="min-h-screen bg-[#FBF6ED] overflow-hidden">
@@ -324,8 +361,9 @@ export default function ResourcesPage() {
                         </div>
 
                         <div className="space-y-4">
-                          {cat.citations.map((item) => {
+                          {cat.citations.map((item: any) => {
                             const fullCitationText = `${item.authors} (${item.year}). ${item.title} ${item.source}`
+
                             return (
                               <motion.div
                                 key={item.id}
@@ -406,21 +444,52 @@ export default function ResourcesPage() {
                       <motion.div
                         variants={fadeInUp}
                         key={idx}
-                        className="p-6 rounded-3xl border border-[#e8e0f7] bg-white shadow-xs hover:shadow-md transition-all duration-300"
+                        className="p-6 rounded-3xl border border-[#e8e0f7] bg-white shadow-xs hover:shadow-md transition-all duration-300 space-y-3"
                       >
-                        <div className="flex items-start justify-between gap-4 mb-3">
-                          <h3 className="text-base font-bold text-[#2a1845] leading-snug">{paper.title}</h3>
-                          <a
-                            href={paper.doi ? (paper.doi.startsWith("http") ? paper.doi : `https://doi.org/${paper.doi}`) : "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-[#7c4fd4] hover:bg-purple-50 transition-all"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            {paper.badge && (
+                              <span className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-md ${paper.badge_color || "bg-purple-100 text-purple-700 border border-purple-200"}`}>
+                                {paper.badge}
+                              </span>
+                            )}
+                            <h3 className="text-base font-bold text-[#2a1845] leading-snug">{paper.title}</h3>
+                          </div>
+                          {paper.doi && (
+                            <a
+                              href={paper.doi.startsWith("http") ? paper.doi : `https://doi.org/${paper.doi}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-[#7c4fd4] hover:bg-purple-50 transition-all"
+                              title="Buka DOI Riset"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          )}
                         </div>
-                        <p className="text-xs text-[#7c4fd4] font-semibold mb-2">{paper.journal} ({paper.year})</p>
-                        <p className="text-xs text-foreground/70 mb-4">Penulis: {paper.authors}</p>
+
+                        <p className="text-xs text-[#7c4fd4] font-semibold">{paper.journal || "Jurnal Ilmiah"} {paper.year ? `(${paper.year})` : ""}</p>
+                        <p className="text-xs text-foreground/70">Penulis: <span className="font-medium text-[#2a1845]">{paper.authors}</span></p>
+
+                        {paper.desc_text && (
+                          <p className="text-xs text-foreground/80 leading-relaxed bg-[#FAF8F5] p-3 rounded-xl border border-purple-50">
+                            {paper.desc_text}
+                          </p>
+                        )}
+
+                        {paper.download_url && (
+                          <div className="pt-2 flex justify-end">
+                            <a
+                              href={paper.download_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] text-white px-4 py-2 text-xs font-semibold transition-all"
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                              <span>Unduh Naskah PDF</span>
+                            </a>
+                          </div>
+                        )}
                       </motion.div>
                     ))
                   )}
@@ -430,35 +499,45 @@ export default function ResourcesPage() {
               {/* Tab 3: Bahan Unduhan PDF */}
               {activeTab === "downloads" && (
                 <div className="space-y-4">
-                  {downloads.map((dl, idx) => (
-                    <motion.div
-                      variants={fadeInUp}
-                      key={idx}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-[#e8e0f7] bg-white shadow-xs hover:shadow-md transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-[#7c4fd4] border border-[#e8e0f7]">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-[#2a1845]">{dl.name}</h4>
-                          <p className="text-xs text-foreground/60">{dl.type} &bull; {dl.size}</p>
-                        </div>
-                      </div>
-
-                      <a
-                        href={dl.url || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] text-white px-5 py-2.5 text-xs font-semibold transition-all cursor-pointer shrink-0"
+                  {downloads.map((dl, idx) => {
+                    const title = dl.title || dl.name || "File Unduhan PDF"
+                    const url = dl.download_url || dl.url || "#"
+                    return (
+                      <motion.div
+                        variants={fadeInUp}
+                        key={idx}
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-[#e8e0f7] bg-white shadow-xs hover:shadow-md transition-all duration-200"
                       >
-                        <Download className="h-3.5 w-3.5" />
-                        Unduh PDF
-                      </a>
-                    </motion.div>
-                  ))}
+                        <div className="flex items-center gap-3.5">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-[#7c4fd4] border border-[#e8e0f7] shrink-0">
+                            <FileText className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-[#2a1845]">{title}</h4>
+                            <p className="text-xs text-foreground/60">
+                              {dl.type || "PDF Document"} {dl.size ? `• ${dl.size}` : ""}
+                            </p>
+                            {dl.desc_text && (
+                              <p className="text-[11px] text-foreground/70 mt-1">{dl.desc_text}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2a1845] hover:bg-[#1a0f2d] text-white px-5 py-2.5 text-xs font-semibold transition-all cursor-pointer shrink-0"
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                          Unduh PDF
+                        </a>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               )}
+
             </motion.div>
           </AnimatePresence>
         </div>

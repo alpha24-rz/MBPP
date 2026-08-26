@@ -17,10 +17,17 @@ import { ModulesView } from "./components/modules-view"
 import { PertemuanView } from "./components/pertemuan-view"
 import { SessionsView } from "./components/sessions-view"
 import { JournalsView } from "./components/journals-view"
+import { BibliographiesView } from "./components/bibliographies-view"
+import { PapersView } from "./components/papers-view"
+import { DownloadsView } from "./components/downloads-view"
 
 import { ModuleModal } from "./components/module-modal"
 import { PertemuanModal } from "./components/pertemuan-modal"
 import { SesiModal, ReflectionQuestionItem, DEFAULT_BLOCK_ORDER } from "./components/sesi-modal"
+import { BibliographyModal } from "./components/bibliography-modal"
+import { PaperModal } from "./components/paper-modal"
+import { DownloadModal } from "./components/download-modal"
+
 
 export default function AdminConsolePage() {
   const router = useRouter()
@@ -41,6 +48,7 @@ export default function AdminConsolePage() {
   const [interventions, setInterventions] = useState<any[]>([])
   const [journals, setJournals] = useState<any[]>([])
   const [articles, setArticles] = useState<any[]>([])
+  const [bibliographies, setBibliographies] = useState<any[]>([])
   const [papers, setPapers] = useState<any[]>([])
   const [downloads, setDownloads] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -114,6 +122,46 @@ export default function AdminConsolePage() {
     order_index: "1",
   })
 
+  // 4. Bibliography Modal State
+  const [showBibliographyModal, setShowBibliographyModal] = useState(false)
+  const [editingBibliography, setEditingBibliography] = useState<any | null>(null)
+  const [bibliographyForm, setBibliographyForm] = useState({
+    category: "Mindfulness & Intervensi Psikoedukasi",
+    authors: "",
+    year: "2026",
+    title: "",
+    source: "",
+    doi: "",
+    tag: "Sitasi MBPP",
+    order_index: "1",
+  })
+
+  // 5. Paper Modal State
+  const [showPaperModal, setShowPaperModal] = useState(false)
+  const [editingPaper, setEditingPaper] = useState<any | null>(null)
+  const [paperForm, setPaperForm] = useState({
+    title: "",
+    authors: "",
+    journal: "",
+    year: "2026",
+    badge: "Publikasi RCT 2026",
+    badge_color: BADGE_COLOR_PRESETS[0].value,
+    doi: "",
+    download_url: "",
+    desc_text: "",
+  })
+
+  // 6. Download Modal State
+  const [showDownloadModal, setShowDownloadModal] = useState(false)
+  const [editingDownload, setEditingDownload] = useState<any | null>(null)
+  const [downloadForm, setDownloadForm] = useState({
+    title: "",
+    type: "Modul Intervensi Utama",
+    size: "2.4 MB",
+    download_url: "",
+    desc_text: "",
+  })
+
   async function fetchDbData() {
     setLoading(true)
     try {
@@ -137,11 +185,15 @@ export default function AdminConsolePage() {
       const { data: artData } = await supabase.from("articles").select("*").order("created_at", { ascending: false })
       if (artData) setArticles(artData)
 
+      // Fetch Bibliographies
+      const { data: bibData } = await supabase.from("bibliographies").select("*").order("order_index", { ascending: true })
+      if (bibData) setBibliographies(bibData)
+
       // Fetch Papers & Downloads
-      const { data: paperData } = await supabase.from("research_papers").select("*")
+      const { data: paperData } = await supabase.from("research_papers").select("*").order("created_at", { ascending: false })
       if (paperData) setPapers(paperData)
 
-      const { data: dlData } = await supabase.from("downloads").select("*")
+      const { data: dlData } = await supabase.from("downloads").select("*").order("created_at", { ascending: false })
       if (dlData) setDownloads(dlData)
     } catch (err) {
       console.error("Gagal memuat data dari Supabase:", err)
@@ -153,6 +205,38 @@ export default function AdminConsolePage() {
   useEffect(() => {
     fetchDbData()
   }, [])
+
+  // Helper upload PDF
+  const handlePdfUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (url: string) => void
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    let result = await uploadFileToSupabase({
+      bucketName: "resources-files",
+      file,
+      allowedTypes: ["application/pdf", "application/x-pdf"],
+      maxSizeMB: 25,
+    })
+
+    if (!result.success) {
+      result = await uploadFileToSupabase({
+        bucketName: "session-media",
+        file,
+        allowedTypes: ["application/pdf", "application/x-pdf"],
+        maxSizeMB: 25,
+      })
+    }
+
+    if (result.success && result.url) {
+      setter(result.url)
+    } else {
+      throw new Error(result.error || "Gagal mengupload file PDF.")
+    }
+  }
+
 
   // Image Upload Handler
   const handleImageUpload = async (
@@ -542,6 +626,210 @@ export default function AdminConsolePage() {
     }
   }
 
+  // --- Bibliographies Handlers ---
+  const handleOpenAddBibliography = () => {
+    setEditingBibliography(null)
+    setBibliographyForm({
+      category: "Mindfulness & Intervensi Psikoedukasi",
+      authors: "",
+      year: "2026",
+      title: "",
+      source: "",
+      doi: "",
+      tag: "Sitasi MBPP",
+      order_index: String(bibliographies.length + 1),
+    })
+    setShowBibliographyModal(true)
+  }
+
+  const handleOpenEditBibliography = (bib: any) => {
+    setEditingBibliography(bib)
+    setBibliographyForm({
+      category: bib.category || "Mindfulness & Intervensi Psikoedukasi",
+      authors: bib.authors || "",
+      year: String(bib.year || "2026"),
+      title: bib.title || "",
+      source: bib.source || "",
+      doi: bib.doi || "",
+      tag: bib.tag || "Sitasi MBPP",
+      order_index: String(bib.order_index || 1),
+    })
+    setShowBibliographyModal(true)
+  }
+
+  const handleSaveBibliography = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const payload = {
+        category: bibliographyForm.category,
+        authors: bibliographyForm.authors,
+        year: bibliographyForm.year,
+        title: bibliographyForm.title,
+        source: bibliographyForm.source,
+        doi: bibliographyForm.doi || null,
+        tag: bibliographyForm.tag || "Sitasi MBPP",
+        order_index: parseInt(bibliographyForm.order_index, 10) || 1,
+      }
+
+      if (editingBibliography) {
+        const { error } = await supabase.from("bibliographies").update(payload).eq("id", editingBibliography.id)
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from("bibliographies").insert([payload])
+        if (error) throw error
+      }
+      setShowBibliographyModal(false)
+      fetchDbData()
+    } catch (err: any) {
+      alert("Error saat menyimpan sitasi: " + err.message)
+    }
+  }
+
+  const handleDeleteBibliography = async (id: number) => {
+    if (!confirm("Hapus sitasi ini dari daftar pustaka?")) return
+    try {
+      const { error } = await supabase.from("bibliographies").delete().eq("id", id)
+      if (error) throw error
+      fetchDbData()
+    } catch (err: any) {
+      alert("Error menghapus sitasi: " + err.message)
+    }
+  }
+
+  // --- Research Papers Handlers ---
+  const handleOpenAddPaper = () => {
+    setEditingPaper(null)
+    setPaperForm({
+      title: "",
+      authors: "",
+      journal: "",
+      year: "2026",
+      badge: "Publikasi RCT 2026",
+      badge_color: BADGE_COLOR_PRESETS[0].value,
+      doi: "",
+      download_url: "",
+      desc_text: "",
+    })
+    setShowPaperModal(true)
+  }
+
+  const handleOpenEditPaper = (paper: any) => {
+    setEditingPaper(paper)
+    setPaperForm({
+      title: paper.title || "",
+      authors: paper.authors || "",
+      journal: paper.journal || "",
+      year: String(paper.year || "2026"),
+      badge: paper.badge || "Publikasi RCT 2026",
+      badge_color: paper.badge_color || BADGE_COLOR_PRESETS[0].value,
+      doi: paper.doi || "",
+      download_url: paper.download_url || "",
+      desc_text: paper.desc_text || "",
+    })
+    setShowPaperModal(true)
+  }
+
+  const handleSavePaper = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const payload = {
+        title: paperForm.title,
+        authors: paperForm.authors,
+        journal: paperForm.journal,
+        year: paperForm.year,
+        badge: paperForm.badge,
+        badge_color: paperForm.badge_color,
+        doi: paperForm.doi || null,
+        download_url: paperForm.download_url || null,
+        desc_text: paperForm.desc_text,
+      }
+
+      if (editingPaper) {
+        const { error } = await supabase.from("research_papers").update(payload).eq("id", editingPaper.id)
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from("research_papers").insert([payload])
+        if (error) throw error
+      }
+      setShowPaperModal(false)
+      fetchDbData()
+    } catch (err: any) {
+      alert("Error saat menyimpan publikasi riset: " + err.message)
+    }
+  }
+
+  const handleDeletePaper = async (id: number) => {
+    if (!confirm("Hapus publikasi riset ini?")) return
+    try {
+      const { error } = await supabase.from("research_papers").delete().eq("id", id)
+      if (error) throw error
+      fetchDbData()
+    } catch (err: any) {
+      alert("Error menghapus publikasi riset: " + err.message)
+    }
+  }
+
+  // --- Downloads Handlers ---
+  const handleOpenAddDownload = () => {
+    setEditingDownload(null)
+    setDownloadForm({
+      title: "",
+      type: "Modul Intervensi Utama",
+      size: "2.4 MB",
+      download_url: "",
+      desc_text: "",
+    })
+    setShowDownloadModal(true)
+  }
+
+  const handleOpenEditDownload = (dl: any) => {
+    setEditingDownload(dl)
+    setDownloadForm({
+      title: dl.title || dl.name || "",
+      type: dl.type || "PDF Document",
+      size: dl.size || "2.4 MB",
+      download_url: dl.download_url || dl.url || "",
+      desc_text: dl.desc_text || "",
+    })
+    setShowDownloadModal(true)
+  }
+
+  const handleSaveDownload = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const payload = {
+        title: downloadForm.title,
+        type: downloadForm.type,
+        size: downloadForm.size,
+        download_url: downloadForm.download_url,
+        desc_text: downloadForm.desc_text,
+      }
+
+      if (editingDownload) {
+        const { error } = await supabase.from("downloads").update(payload).eq("id", editingDownload.id)
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from("downloads").insert([payload])
+        if (error) throw error
+      }
+      setShowDownloadModal(false)
+      fetchDbData()
+    } catch (err: any) {
+      alert("Error saat menyimpan bahan unduhan: " + err.message)
+    }
+  }
+
+  const handleDeleteDownload = async (id: number) => {
+    if (!confirm("Hapus bahan unduhan ini?")) return
+    try {
+      const { error } = await supabase.from("downloads").delete().eq("id", id)
+      if (error) throw error
+      fetchDbData()
+    } catch (err: any) {
+      alert("Error menghapus bahan unduhan: " + err.message)
+    }
+  }
+
   // Filter Search
   const filteredModules = modules.filter((m) =>
     searchQuery ? m.title?.toLowerCase().includes(searchQuery.toLowerCase()) || m.subtitle?.toLowerCase().includes(searchQuery.toLowerCase()) : true
@@ -565,6 +853,30 @@ export default function AdminConsolePage() {
     searchQuery ? j.participant_name?.toLowerCase().includes(searchQuery.toLowerCase()) || j.journal_text?.toLowerCase().includes(searchQuery.toLowerCase()) : true
   )
 
+  const filteredBibliographies = bibliographies.filter((b) =>
+    searchQuery
+      ? b.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.authors?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.tag?.toLowerCase().includes(searchQuery.toLowerCase())
+      : true
+  )
+
+  const filteredPapers = papers.filter((p) =>
+    searchQuery
+      ? p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.authors?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.journal?.toLowerCase().includes(searchQuery.toLowerCase())
+      : true
+  )
+
+  const filteredDownloads = downloads.filter((d) => {
+    const title = d.title || d.name || ""
+    return searchQuery
+      ? title.toLowerCase().includes(searchQuery.toLowerCase()) || d.type?.toLowerCase().includes(searchQuery.toLowerCase())
+      : true
+  })
+
   return (
     <main className="min-h-screen bg-[#FAF8F5] overflow-hidden">
       <Navbar />
@@ -584,6 +896,9 @@ export default function AdminConsolePage() {
           modulesCount={modules.length}
           pertemuanCount={pertemuan.length}
           sessionsCount={interventions.length}
+          bibliographiesCount={bibliographies.length}
+          papersCount={papers.length}
+          downloadsCount={downloads.length}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
@@ -632,6 +947,33 @@ export default function AdminConsolePage() {
           {activeView === "journals" && (
             <JournalsView journals={filteredJournals} />
           )}
+
+          {activeView === "bibliographies" && (
+            <BibliographiesView
+              bibliographies={filteredBibliographies}
+              onAddBibliography={handleOpenAddBibliography}
+              onEditBibliography={handleOpenEditBibliography}
+              onDeleteBibliography={handleDeleteBibliography}
+            />
+          )}
+
+          {activeView === "papers" && (
+            <PapersView
+              papers={filteredPapers}
+              onAddPaper={handleOpenAddPaper}
+              onEditPaper={handleOpenEditPaper}
+              onDeletePaper={handleDeletePaper}
+            />
+          )}
+
+          {activeView === "downloads" && (
+            <DownloadsView
+              downloads={filteredDownloads}
+              onAddDownload={handleOpenAddDownload}
+              onEditDownload={handleOpenEditDownload}
+              onDeleteDownload={handleDeleteDownload}
+            />
+          )}
         </AnimatePresence>
       </section>
 
@@ -668,7 +1010,37 @@ export default function AdminConsolePage() {
         handleMediaFileUpload={handleMediaFileUpload}
       />
 
+      <BibliographyModal
+        isOpen={showBibliographyModal}
+        onClose={() => setShowBibliographyModal(false)}
+        editingBibliography={editingBibliography}
+        form={bibliographyForm}
+        setForm={setBibliographyForm}
+        onSave={handleSaveBibliography}
+      />
+
+      <PaperModal
+        isOpen={showPaperModal}
+        onClose={() => setShowPaperModal(false)}
+        editingPaper={editingPaper}
+        form={paperForm}
+        setForm={setPaperForm}
+        onSave={handleSavePaper}
+        handlePdfUpload={handlePdfUpload}
+      />
+
+      <DownloadModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        editingDownload={editingDownload}
+        form={downloadForm}
+        setForm={setDownloadForm}
+        onSave={handleSaveDownload}
+        handlePdfUpload={handlePdfUpload}
+      />
+
       <Footer />
     </main>
   )
 }
+

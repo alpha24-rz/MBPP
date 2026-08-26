@@ -1,8 +1,8 @@
 "use client"
 
-import { BookOpen, Calendar, Layers, Brain, Search } from "lucide-react"
+import { BookOpen, Calendar, Layers, Brain, Search, Quote, FileText, Download } from "lucide-react"
 
-export type AdminViewType = "modules" | "pertemuan" | "sessions" | "journals" | "articles" | "participants" | "papers" | "downloads"
+export type AdminViewType = "modules" | "pertemuan" | "sessions" | "journals" | "bibliographies" | "papers" | "downloads"
 
 interface AdminTabsProps {
   activeView: AdminViewType
@@ -10,6 +10,9 @@ interface AdminTabsProps {
   modulesCount: number
   pertemuanCount: number
   sessionsCount: number
+  bibliographiesCount?: number
+  papersCount?: number
+  downloadsCount?: number
   searchQuery: string
   setSearchQuery: (query: string) => void
 }
@@ -20,6 +23,9 @@ export function AdminTabs({
   modulesCount,
   pertemuanCount,
   sessionsCount,
+  bibliographiesCount = 0,
+  papersCount = 0,
+  downloadsCount = 0,
   searchQuery,
   setSearchQuery,
 }: AdminTabsProps) {
@@ -68,6 +74,39 @@ export function AdminTabs({
           <Brain className="h-4 w-4" />
           <span>Jurnal Refleksi</span>
         </button>
+
+        <button
+          onClick={() => setActiveView("bibliographies")}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
+            activeView === "bibliographies" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
+          }`}
+        >
+          <Quote className="h-4 w-4 text-[#B08D57]" />
+          <span>Daftar Pustaka (APA)</span>
+          <span className="px-2 py-0.5 rounded-full bg-white/20 text-[10px]">{bibliographiesCount}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveView("papers")}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
+            activeView === "papers" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
+          }`}
+        >
+          <FileText className="h-4 w-4 text-[#B08D57]" />
+          <span>Publikasi Riset</span>
+          <span className="px-2 py-0.5 rounded-full bg-white/20 text-[10px]">{papersCount}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveView("downloads")}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 ${
+            activeView === "downloads" ? "bg-[#2a1845] text-white shadow-md" : "text-[#2a1845]/70 hover:bg-purple-50"
+          }`}
+        >
+          <Download className="h-4 w-4 text-[#B08D57]" />
+          <span>Bahan Unduhan PDF</span>
+          <span className="px-2 py-0.5 rounded-full bg-white/20 text-[10px]">{downloadsCount}</span>
+        </button>
       </div>
 
       <div className="relative w-full md:w-60">
@@ -83,3 +122,4 @@ export function AdminTabs({
     </div>
   )
 }
+

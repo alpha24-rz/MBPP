@@ -213,6 +213,28 @@ CREATE POLICY "Allow public read on downloads" ON public.downloads FOR SELECT US
 CREATE POLICY "Allow public write on downloads" ON public.downloads FOR ALL USING (true);
 
 
+-- 8. TABEL 'bibliographies' (Daftar Pustaka & Sitasi APA 7th Format)
+CREATE TABLE IF NOT EXISTS public.bibliographies (
+    id SERIAL PRIMARY KEY,
+    category VARCHAR(255) NOT NULL,
+    authors TEXT NOT NULL,
+    year VARCHAR(20) NOT NULL,
+    title TEXT NOT NULL,
+    source TEXT NOT NULL,
+    doi TEXT,
+    tag VARCHAR(255) DEFAULT 'Sitasi MBPP',
+    order_index INTEGER DEFAULT 1,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.bibliographies ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read on bibliographies" ON public.bibliographies;
+DROP POLICY IF EXISTS "Allow public write on bibliographies" ON public.bibliographies;
+CREATE POLICY "Allow public read on bibliographies" ON public.bibliographies FOR SELECT USING (true);
+CREATE POLICY "Allow public write on bibliographies" ON public.bibliographies FOR ALL USING (true);
+
+
+
 -- ========================================================
 -- SEED INITIAL DATA (Dua Sesi & Kurikulum MBPP)
 -- ========================================================
@@ -627,3 +649,75 @@ ON CONFLICT (id) DO UPDATE SET
     read_time = EXCLUDED.read_time;
 
 SELECT setval('articles_id_seq', (SELECT MAX(id) FROM public.articles));
+
+
+-- 5. SEED BIBLIOGRAPHIES
+INSERT INTO public.bibliographies (id, category, authors, year, title, source, doi, tag, order_index)
+VALUES
+(1, 'Mindfulness & Intervensi Psikoedukasi', 'Güldal, S., & Satan, A.', '2022', 'The effect of a mindfulness-based psychoeducation program on emotional regulation and psychological well-being among young adults.', 'Journal of Rational-Emotive & Cognitive-Behavior Therapy, 40(3), 512–531.', 'https://doi.org/10.1007/s10942-021-00424-w', 'Adaptasi Utama Intervensi MBPP', 1),
+(2, 'Mindfulness & Intervensi Psikoedukasi', 'Kabat-Zinn, J.', '1994', 'Wherever you go, there you are: Mindfulness meditation in everyday life.', 'Hyperion, New York.', NULL, 'Prinsip Kesadaran Penuh (Mindfulness)', 2),
+(3, 'Mindfulness & Intervensi Psikoedukasi', 'Goldberg, S. B., Tucker, R. P., Greene, P. A., Davidson, R. J., Wampold, B. E., Kearney, D. J., & Simpson, T. L.', '2018', 'Mindfulness-based interventions for psychiatric disorders: A systematic review and meta-analysis.', 'Clinical Psychology Review, 59, 52–60.', 'https://doi.org/10.1016/j.cpr.2017.10.011', 'Meta-Analisis Efektivitas MBI', 3),
+(4, 'Ketergantungan AI & Cyberpsychology (AI Intimacy)', 'Pentina, N., Tarafdar, M., Pantoja, F., & Koh, C. E.', '2023', 'Exploring the psychological mechanisms of AI intimacy: Chatbot attachment and parasocial interactions among Gen Z.', 'Computers in Human Behavior, 148, 107873.', 'https://doi.org/10.1016/j.chb.2023.107873', 'Mekanisme Psikologis AI Intimacy', 4),
+(5, 'Ketergantungan AI & Cyberpsychology (AI Intimacy)', 'Turkle, S.', '2015', 'Reclaiming conversation: The power of talk in a digital age.', 'Penguin Press, New York.', NULL, 'Teori Keterasingan Relasional Digital', 5),
+(6, 'Ketergantungan AI & Cyberpsychology (AI Intimacy)', 'Skjuve, M., Følstad, A., Fostervold, K. I., & Brandtzaeg, P. B.', '2021', 'My chatbot friend: A longitudinal study of user-chatbot relationships.', 'International Journal of Human-Computer Studies, 149, 102601.', 'https://doi.org/10.1016/j.ijhcs.2021.102601', 'Studi Longitudinal Hubungan Chatbot', 6),
+(7, 'Big Five Personality & Character Strengths', 'Goldberg, L. R.', '1992', 'The development of markers for the Big-Five factor structure.', 'Psychological Assessment, 4(1), 26–42.', 'https://doi.org/10.1037/1040-3590.4.1.26', 'Dasar Instrumen IPIP-BFM-50', 7),
+(8, 'Big Five Personality & Character Strengths', 'Peterson, C., & Seligman, M. E. P.', '2004', 'Character strengths and virtues: A handbook and classification.', 'Oxford University Press & American Psychological Association.', NULL, 'Klasifikasi Strengths (VIA)', 8),
+(9, 'Metodologi Eksperimen & Treatment Fidelity', 'Bellg, A. J., Borrelli, B., Resnick, B., Hecht, J., Minicucci, D. S., Ory, M., & Treatment Fidelity Workgroup.', '2004', 'Enhancing treatment fidelity in health behavior change studies: Best practices and recommendations.', 'Health Psychology, 23(5), 443–451.', 'https://doi.org/10.1037/0278-6133.23.5.443', 'Lembar Observasi Fidelitas', 9)
+ON CONFLICT (id) DO UPDATE SET
+    category = EXCLUDED.category,
+    authors = EXCLUDED.authors,
+    year = EXCLUDED.year,
+    title = EXCLUDED.title,
+    source = EXCLUDED.source,
+    doi = EXCLUDED.doi,
+    tag = EXCLUDED.tag,
+    order_index = EXCLUDED.order_index;
+
+SELECT setval('bibliographies_id_seq', (SELECT MAX(id) FROM public.bibliographies));
+
+
+-- 6. SEED RESEARCH PAPERS
+INSERT INTO public.research_papers (id, title, authors, journal, year, badge, badge_color, doi, download_url, desc_text)
+VALUES
+(
+    1,
+    'Efektivitas Intervensi Psikoedukasi MBPP dalam Menurunkan Ketergantungan Curhat Chatbot AI pada Mahasiswa Generasi Z',
+    'Tim Peneliti MBPP 2026',
+    'Jurnal Psikologi Intervensi & Cyberpsychology Indonesia',
+    '2026',
+    'Publikasi RCT 2026',
+    'bg-purple-100 text-purple-700 border border-purple-200',
+    'https://doi.org/10.1016/mbpp.2026.0101',
+    '/downloads/Modul_MBPP.pdf',
+    'Naskah riset eksperimen Randomized Controlled Trial (RCT) menguji tingkat penurunan skor CAIDS-20 setelah pemberian intervensi MBPP selama 4 minggu.'
+)
+ON CONFLICT (id) DO UPDATE SET
+    title = EXCLUDED.title,
+    authors = EXCLUDED.authors,
+    journal = EXCLUDED.journal,
+    year = EXCLUDED.year,
+    badge = EXCLUDED.badge,
+    badge_color = EXCLUDED.badge_color,
+    doi = EXCLUDED.doi,
+    download_url = EXCLUDED.download_url,
+    desc_text = EXCLUDED.desc_text;
+
+SELECT setval('research_papers_id_seq', (SELECT MAX(id) FROM public.research_papers));
+
+
+-- 7. SEED DOWNLOADS
+INSERT INTO public.downloads (id, title, type, size, download_url, desc_text)
+VALUES
+(1, 'Modul Eksperimen MBPP Revisi 2026.pdf', 'Modul Intervensi Utama', '4.2 MB', '/downloads/Modul_MBPP.pdf', 'Panduan lengkap modul intervensi MBPP.'),
+(2, 'Kalender Latihan Harian & Jurnal Syukur.pdf', 'Panduan Latihan Mandiri', '1.8 MB', '/downloads/MBPP_Jurnal_Syukur.pdf', 'Lembar jurnal syukur 31 hari.'),
+(3, 'Lembar Observasi Fidelitas & Manipulation Check.pdf', 'Instrumen Observer', '1.1 MB', '/downloads/Fidelitas_MBPP.pdf', 'Format observasi fidelitas perlakuan.'),
+(4, 'Instrumen Pengukuran CAIDS-20 & IPIP-BFM-50.pdf', 'Skala Asesmen Psikologi', '2.4 MB', '/downloads/Instrumen_CAIDS20_IPIP50.pdf', 'Kuesioner asesmen skala psikologi.')
+ON CONFLICT (id) DO UPDATE SET
+    title = EXCLUDED.title,
+    type = EXCLUDED.type,
+    size = EXCLUDED.size,
+    download_url = EXCLUDED.download_url,
+    desc_text = EXCLUDED.desc_text;
+
+SELECT setval('downloads_id_seq', (SELECT MAX(id) FROM public.downloads));
+
